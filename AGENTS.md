@@ -14,65 +14,51 @@ npx tsc --noEmit         # TypeScript type check
 
 ### Testing
 
-This project does not currently have a test framework configured. When adding tests:
-
-- Add Jest or Vitest configuration
-- Use `npm run lint` as the primary validation command
-- Run `npx tsc --noEmit` to verify TypeScript types before submitting changes
+No test framework configured yet. When adding tests:
+- Install Jest or Vitest
+- Run single test: `npm test -- path/to/test.spec.ts` or `npm test -- --testNamePattern="pattern"`
+- Use `npm run lint` + `npx tsc --noEmit` for validation
 
 ---
 
 ## Code Style Guidelines
 
-### TypeScript Configuration
+### TypeScript Config
 
-- Strict mode enabled (`"strict": true`)
-- Path alias: `@/*` maps to root
+- Strict mode (`"strict": true`)
+- Path alias: `@/*` → root
 - Target: ES2017, Module: bundler
 
 ### Imports
-
-- Use `import type` for type-only imports
-- Group external imports first, then internal
-- Use `@/` alias for internal imports
 
 ```typescript
 import type { Transaction } from '@/lib/types'
 import { useState } from 'react'
 import Link from 'next/link'
 ```
+- Use `import type` for type-only imports
+- External imports first, then internal with `@/` alias
 
 ### Formatting (Prettier)
 
-- No semicolons (`semi: false`)
-- Single quotes (`singleQuote: true`)
-- 2 spaces indentation (`tabWidth: 2`)
-- Trailing commas in ES5 style (`trailingComma: "es5"`)
-- 80 character line width (`printWidth: 80`)
-- Always run `npm run format` before committing
+- No semicolons, single quotes, 2-space indent
+- Trailing commas (ES5), 80 char line width
+- Run `npm run format` before committing
 
-### Linting (ESLint)
+### Linting
 
-- Uses Next.js core-web-vitals and TypeScript configs
-- Prettier integration to avoid conflicts
+- Next.js core-web-vitals + TypeScript configs
 - Run `npm run lint` to verify code quality
-- Fix linting errors before committing
 
 ### Naming Conventions
 
-- **Components**: PascalCase (e.g., `Header`, `DashboardCard`)
-- **Functions/Variables**: camelCase (e.g., `getTransactions`, `isLoading`)
-- **Types/Interfaces**: PascalCase (e.g., `Transaction`, `MonthlySummary`)
-- **Constants**: UPPER_SNAKE_CASE (e.g., `SUPPORTED_CURRENCIES`)
-- **Files**: kebab-case for utilities, PascalCase for components (e.g., `transaction.ts`, `Header.tsx`)
+- Components: `Header`, `DashboardCard` (PascalCase)
+- Functions/Variables: `getTransactions`, `isLoading` (camelCase)
+- Types/Interfaces: `Transaction`, `MonthlySummary` (PascalCase)
+- Constants: `SUPPORTED_CURRENCIES` (UPPER_SNAKE_CASE)
+- Files: `transaction.ts`, `Header.tsx` (kebab-case for utils)
 
 ### React/Next.js Patterns
-
-- Use functional components with hooks
-- Add `'use client'` directive for client-side components
-- Default exports for pages and components
-- Use Link from `next/link` for navigation
-- Server components by default, client components only when needed
 
 ```typescript
 'use client'
@@ -82,84 +68,68 @@ export default function Header() {
   return <nav>...</nav>
 }
 ```
+- Functional components with hooks
+- `'use client'` for client components only
+- Default exports, Link from `next/link`
 
 ### Type Safety
 
 - Prefer explicit types over `any`
-- Use interfaces for object shapes with clear contracts
-- Use type aliases for union types and utility types
-- Export types from `lib/types/index.ts` for reuse
+- Use interfaces for object shapes
+- Export types from `@/lib/types`
 
 ### Styling (Tailwind CSS v4)
 
-- Use zinc color palette for neutral colors
-- Always include dark mode variants (`dark:` prefix)
-- Follow mobile-first responsive design (`sm:`, `md:`, `lg:`)
-- Use semantic color scales (green for positive, red for negative)
+- Zinc palette for neutrals
+- Always include `dark:` variants
+- Mobile-first (`sm:`, `md:`, `lg:`)
+- Green for positive, red for negative
 
 ### Error Handling
 
-- Use try/catch for async operations
-- Validate data at boundaries (forms, API calls)
-- Provide meaningful error messages
+- try/catch for async operations
+- Validate at boundaries (forms, API)
 - Handle loading states gracefully
 
-### File Organization
+### Persistence (localStorage)
 
-- `app/` - Next.js App Router pages and layouts
-- `components/` - Reusable UI components
-- `lib/` - Shared utilities, helpers, and type definitions
-- `lib/types/` - TypeScript type definitions
-- `public/` - Static assets
+- Use `storage` singleton from `@/lib/storage`
+- Methods: `saveTransaction()`, `getTransactions()`, `deleteTransaction()`
+- Check `lib/storage/` for API
 
 ### Before Committing
 
-1. Run `npm run format` to format all files
-2. Run `npm run lint` to check for code quality issues
-3. Run `npx tsc --noEmit` to verify TypeScript types
-4. Test the changes locally with `npm run dev`
-5. Ensure no console errors or warnings
+1. `npm run format`
+2. `npm run lint`
+3. `npx tsc --noEmit`
+4. `npm run dev` to verify
 
 ---
 
-## Technology Stack
+## Tech Stack
 
-- **Framework**: Next.js 16.1.6 (App Router)
-- **React**: 19.2.3
-- **Styling**: Tailwind CSS v4
-- **TypeScript**: v5 (strict mode)
-- **Icons**: Lucide React
-- **Linting**: ESLint + Prettier
+Next.js 16.1.6 (App Router) · React 19.2.3 · Tailwind CSS v4 · TypeScript v5 · Lucide React · ESLint + Prettier
 
 ---
 
 ## Data Layer
 
-The application uses a type-first approach with all data models defined in `lib/types/`:
+Type-first approach. Models in `lib/types/`:
+- `common.ts` - Currency, DateRange, Pagination
+- `transaction.ts` - Transaction models
+- `category.ts` - Category hierarchy
+- `summary.ts` - Analytics types
 
-- `common.ts` - Shared utilities (Currency, DateRange, Pagination)
-- `transaction.ts` - Transaction models and types
-- `category.ts` - Category hierarchy and types
-- `summary.ts` - Monthly summary and analytics types
-
-Always import types from `@/lib/types` rather than individual files to maintain consistency.
-
----
-
-## Development Notes
-
-- This is a new project (M1 milestone) - focus on core data structures first
-- localStorage will be used for persistence (no database yet)
-- Multi-currency support with 15 currencies
-- Hierarchical category structure (parent/child relationships)
-- Follow the GitHub issues for feature requirements
+Import from `@/lib/types` (not individual files)
 
 ---
 
-## Important Files
+## Project Context
 
-- `tsconfig.json` - TypeScript config
-- `next.config.ts` - Next.js config
-- `eslint.config.mjs` - ESLint rules
-- `.prettierrc` - Prettier rules
-- `package.json` - Dependencies and scripts
+M1/M2 milestone - localStorage persistence, 15 currencies, hierarchical categories. Follow GitHub issues for requirements.
+
+---
+
+## Key Config Files
+
+`tsconfig.json` · `next.config.ts` · `eslint.config.mjs` · `.prettierrc` · `package.json`
