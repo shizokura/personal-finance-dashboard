@@ -44,7 +44,13 @@ export type DateRange = {
   end: Date
 }
 
-export type DateFilter = 'today' | 'thisWeek' | 'thisMonth' | 'thisYear' | 'allTime' | 'custom'
+export type DateFilter =
+  | 'today'
+  | 'thisWeek'
+  | 'thisMonth'
+  | 'thisYear'
+  | 'allTime'
+  | 'custom'
 
 export interface PaginationOptions {
   page: number

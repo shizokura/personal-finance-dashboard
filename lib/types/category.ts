@@ -13,7 +13,10 @@ export interface Category {
   updatedAt: Date
 }
 
-export interface Subcategory extends Omit<Category, 'children' | 'budgetLimit'> {
+export interface Subcategory extends Omit<
+  Category,
+  'children' | 'budgetLimit'
+> {
   parentId: string
 }
 

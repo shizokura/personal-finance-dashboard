@@ -1,10 +1,21 @@
 import type { Attachment, CurrencyCode, Metadata } from './common'
 
-export type TransactionType = 'income' | 'expense' | 'transfer' | 'refund' | 'recurring'
+export type TransactionType =
+  | 'income'
+  | 'expense'
+  | 'transfer'
+  | 'refund'
+  | 'recurring'
 
 export type TransactionStatus = 'pending' | 'completed' | 'cancelled' | 'failed'
 
-export type RecurringFrequency = 'daily' | 'weekly' | 'biweekly' | 'monthly' | 'quarterly' | 'yearly'
+export type RecurringFrequency =
+  | 'daily'
+  | 'weekly'
+  | 'biweekly'
+  | 'monthly'
+  | 'quarterly'
+  | 'yearly'
 
 export interface Transaction {
   id: string

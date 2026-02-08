@@ -63,11 +63,14 @@ export interface TopTransaction {
 export interface MonthlyTransactionStats {
   totalTransactions: number
   averageTransactionAmount: number
-  byType: Record<TransactionType, {
-    count: number
-    total: number
-    average: number
-  }>
+  byType: Record<
+    TransactionType,
+    {
+      count: number
+      total: number
+      average: number
+    }
+  >
 }
 
 export interface BudgetProgress {

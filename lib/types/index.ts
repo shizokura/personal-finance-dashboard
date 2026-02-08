@@ -9,9 +9,7 @@ export type {
   Metadata,
 } from './common'
 
-export {
-  SUPPORTED_CURRENCIES,
-} from './common'
+export { SUPPORTED_CURRENCIES } from './common'
 
 export type {
   TransactionType,
