@@ -117,13 +117,13 @@ export default function Home() {
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <MetricCard
-              label="Total Balance"
+              label="Net Balance"
               value={
                 summary
-                  ? formatCurrency(summary.totalBalance, baseCurrency)
+                  ? formatCurrency(summary.netSavings, baseCurrency)
                   : '$0.00'
               }
-              color="default"
+              color={summary && summary.netSavings >= 0 ? 'green' : 'red'}
             />
             <MetricCard
               label="Monthly Income"
