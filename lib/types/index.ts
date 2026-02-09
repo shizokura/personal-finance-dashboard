@@ -7,6 +7,7 @@ export type {
   SortOptions,
   Attachment,
   Metadata,
+  ChartViewType,
 } from './common'
 
 export { SUPPORTED_CURRENCIES } from './common'

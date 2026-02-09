@@ -52,6 +52,8 @@ export type DateFilter =
   | 'allTime'
   | 'custom'
 
+export type ChartViewType = 'pie' | 'bar' | 'list'
+
 export interface PaginationOptions {
   page: number
   limit: number

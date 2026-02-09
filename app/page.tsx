@@ -15,6 +15,7 @@ import {
   BudgetProgress,
   TrendTable,
   RecentTransactions,
+  ExpenseChart,
 } from '@/components/dashboard'
 import { ChevronLeft, ChevronRight, Calendar } from 'lucide-react'
 import { useDashboardData } from './dashboard/hooks'
@@ -175,7 +176,7 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-            <BreakdownList
+            <ExpenseChart
               title="Expense Breakdown"
               breakdown={summary?.expenseBreakdown.byCategory || []}
               currency={baseCurrency}
