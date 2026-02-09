@@ -3,9 +3,12 @@
 import { useState, useEffect, useMemo } from 'react'
 import type { Transaction, TransactionFilter } from '@/lib/types'
 import { filterTransactions } from '@/lib/calculations/filter-helpers'
+import { ITEMS_PER_PAGE } from '@/lib/constants/pagination'
+import { usePagination } from '@/lib/hooks/usePagination'
 import TransactionCard from './TransactionCard'
 import TransactionModal from './TransactionModal'
 import DeleteConfirmation from './DeleteConfirmation'
+import Pagination from '@/components/ui/Pagination'
 import storage, { storageEvents } from '@/lib/storage'
 import { ArrowUp, ArrowDown, FolderOpen } from 'lucide-react'
 
@@ -49,6 +52,18 @@ export default function TransactionList({ filters }: TransactionListProps) {
         : a.date.getTime() - b.date.getTime()
     )
   }, [filteredTransactions, sortDirection])
+
+  const { currentPage, totalPages, startRange, endRange, setCurrentPage } =
+    usePagination({
+      totalItems: sortedTransactions.length,
+      itemsPerPage: ITEMS_PER_PAGE,
+    })
+
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE
+  const paginatedTransactions = sortedTransactions.slice(
+    offset,
+    offset + ITEMS_PER_PAGE
+  )
 
   const handleEdit = (transaction: Transaction) => {
     setEditingTransaction(transaction)
@@ -119,7 +134,7 @@ export default function TransactionList({ filters }: TransactionListProps) {
       </div>
 
       <div className="space-y-2">
-        {sortedTransactions.map((transaction) => {
+        {paginatedTransactions.map((transaction) => {
           const category = getCategoryForTransaction(transaction)
           return (
             <TransactionCard
@@ -134,6 +149,15 @@ export default function TransactionList({ filters }: TransactionListProps) {
           )
         })}
       </div>
+
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        startRange={startRange}
+        endRange={endRange}
+        totalItems={sortedTransactions.length}
+        onPageChange={setCurrentPage}
+      />
 
       {editingTransaction && (
         <TransactionModal
