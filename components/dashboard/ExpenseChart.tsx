@@ -21,7 +21,9 @@ import type {
 } from '@/lib/types'
 import { formatCurrency } from '@/lib/utils/format-utils'
 import CardContainer from '@/components/layout/CardContainer'
-import ChartToggle from './ChartToggle'
+import { PieChart as PieChartIcon, BarChart3, List } from 'lucide-react'
+import ViewToggle from '@/components/ui/ViewToggle'
+import EmptyState from '@/components/ui/EmptyState'
 import ExpenseListView from './ExpenseListView'
 
 interface CustomTooltipProps {
@@ -78,6 +80,27 @@ export default function ExpenseChart({
 }: ExpenseChartProps) {
   const [viewType, setViewType] = useState<ChartViewType>('pie')
 
+  const viewOptions = useMemo(
+    () => [
+      {
+        id: 'pie' as const,
+        label: 'Pie',
+        icon: PieChartIcon,
+      },
+      {
+        id: 'bar' as const,
+        label: 'Bar',
+        icon: BarChart3,
+      },
+      {
+        id: 'list' as const,
+        label: 'List',
+        icon: List,
+      },
+    ],
+    []
+  )
+
   const chartData = useMemo(() => {
     return breakdown.map((item) => ({
       name: item.categoryName,
@@ -93,14 +116,16 @@ export default function ExpenseChart({
           <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">
             {title}
           </h2>
-          <ChartToggle value={viewType} onChange={setViewType} />
+          <ViewToggle
+            value={viewType}
+            onChange={setViewType}
+            options={viewOptions}
+          />
         </div>
       }
     >
       {breakdown.length === 0 ? (
-        <p className="mt-4 text-sm text-zinc-600 dark:text-zinc-400">
-          No expense data available for this period.
-        </p>
+        <EmptyState message="No expense data available for this period." />
       ) : (
         <div className="mt-4">
           {viewType === 'list' ? (

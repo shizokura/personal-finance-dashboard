@@ -4,25 +4,25 @@ import type { MonthlyTrend, TrendComparison, CurrencyCode } from '@/lib/types'
 import { formatCurrency } from '@/lib/utils/format-utils'
 import { ArrowUp, ArrowDown, Minus } from 'lucide-react'
 import CardContainer from '@/components/layout/CardContainer'
+import EmptyState from '@/components/ui/EmptyState'
 
 interface TrendTableProps {
+  title?: React.ReactNode
   trends: MonthlyTrend[]
   currency: CurrencyCode
   comparison?: TrendComparison
 }
 
 export default function TrendTable({
+  title = 'Monthly Trend',
   trends,
   currency,
   comparison,
 }: TrendTableProps) {
   return (
-    <CardContainer title="Monthly Trend">
+    <CardContainer title={title}>
       {trends.length === 0 ? (
-        <p className="mt-4 text-sm text-zinc-600 dark:text-zinc-400">
-          No trend data available yet. Add transactions to see your monthly
-          trends.
-        </p>
+        <EmptyState message="No trend data available yet. Add transactions to see your monthly trends." />
       ) : (
         <div className="mt-4 overflow-x-auto">
           <table className="w-full text-sm">

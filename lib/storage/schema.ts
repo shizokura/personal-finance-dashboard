@@ -4,7 +4,13 @@ export const CURRENT_SCHEMA_VERSION = 1
 
 export type SchemaVersion = number
 
+function isClientSide(): boolean {
+  return typeof window !== 'undefined'
+}
+
 export function checkSchemaVersion(): SchemaVersion {
+  if (!isClientSide()) return 0
+
   try {
     const version = localStorage.getItem(STORAGE_KEYS.SCHEMA_VERSION)
     return version ? parseInt(version, 10) : 0
@@ -15,6 +21,8 @@ export function checkSchemaVersion(): SchemaVersion {
 }
 
 export function updateSchemaVersion(version: number): void {
+  if (!isClientSide()) return
+
   try {
     localStorage.setItem(STORAGE_KEYS.SCHEMA_VERSION, version.toString())
   } catch (error) {
@@ -23,6 +31,8 @@ export function updateSchemaVersion(version: number): void {
 }
 
 export function migrate(): void {
+  if (!isClientSide()) return
+
   const currentVersion = checkSchemaVersion()
 
   if (currentVersion === CURRENT_SCHEMA_VERSION) {

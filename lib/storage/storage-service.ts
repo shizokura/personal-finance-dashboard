@@ -23,7 +23,13 @@ class StorageService {
     this.initialized = true
   }
 
+  private isClientSide(): boolean {
+    return typeof window !== 'undefined'
+  }
+
   private get<T>(key: string, defaultValue: T): T {
+    if (!this.isClientSide()) return defaultValue
+
     try {
       const item = localStorage.getItem(key)
       return item ? (JSON.parse(item) as T) : defaultValue
@@ -34,6 +40,8 @@ class StorageService {
   }
 
   private set<T>(key: string, value: T): void {
+    if (!this.isClientSide()) return
+
     try {
       localStorage.setItem(key, JSON.stringify(value))
     } catch (error) {
@@ -42,6 +50,8 @@ class StorageService {
   }
 
   private remove(key: string): void {
+    if (!this.isClientSide()) return
+
     try {
       localStorage.removeItem(key)
     } catch (error) {
@@ -50,6 +60,8 @@ class StorageService {
   }
 
   clear(): void {
+    if (!this.isClientSide()) return
+
     try {
       Object.values(STORAGE_KEYS).forEach((key) => {
         localStorage.removeItem(key)

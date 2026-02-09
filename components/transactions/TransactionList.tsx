@@ -1,14 +1,19 @@
 'use client'
 
 import { useState, useEffect, useMemo } from 'react'
-import type { Transaction } from '@/lib/types'
+import type { Transaction, TransactionFilter } from '@/lib/types'
+import { filterTransactions } from '@/lib/calculations/filter-helpers'
 import TransactionCard from './TransactionCard'
 import TransactionModal from './TransactionModal'
 import DeleteConfirmation from './DeleteConfirmation'
 import storage, { storageEvents } from '@/lib/storage'
 import { ArrowUp, ArrowDown, FolderOpen } from 'lucide-react'
 
-export default function TransactionList() {
+interface TransactionListProps {
+  filters?: TransactionFilter
+}
+
+export default function TransactionList({ filters }: TransactionListProps) {
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [categories] = useState(storage.getCategories())
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc')
@@ -33,13 +38,17 @@ export default function TransactionList() {
     }
   }, [])
 
+  const filteredTransactions = useMemo(() => {
+    return filterTransactions(transactions, filters || {}, categories)
+  }, [transactions, filters, categories])
+
   const sortedTransactions = useMemo(() => {
-    return [...transactions].sort((a, b) =>
+    return [...filteredTransactions].sort((a, b) =>
       sortDirection === 'desc'
         ? b.date.getTime() - a.date.getTime()
         : a.date.getTime() - b.date.getTime()
     )
-  }, [transactions, sortDirection])
+  }, [filteredTransactions, sortDirection])
 
   const handleEdit = (transaction: Transaction) => {
     setEditingTransaction(transaction)
@@ -60,22 +69,28 @@ export default function TransactionList() {
     return categories.find((cat) => cat.id === transaction.categoryId)
   }
 
-  if (transactions.length === 0) {
+  if (filteredTransactions.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-zinc-200 bg-zinc-50 py-12 dark:border-zinc-700 dark:bg-zinc-800">
         <FolderOpen className="mb-3 h-12 w-12 text-zinc-400" />
         <h3 className="mb-1 text-sm font-medium text-zinc-900 dark:text-zinc-50">
-          No transactions yet
+          {transactions.length === 0
+            ? 'No transactions yet'
+            : 'No transactions match your filters'}
         </h3>
         <p className="mb-4 text-sm text-zinc-500 dark:text-zinc-400">
-          Get started by adding your first transaction
+          {transactions.length === 0
+            ? 'Get started by adding your first transaction'
+            : 'Try adjusting your search or filters'}
         </p>
-        <a
-          href="/add-entry"
-          className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-700 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
-        >
-          Add Transaction
-        </a>
+        {transactions.length === 0 && (
+          <a
+            href="/add-entry"
+            className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-700 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
+          >
+            Add Transaction
+          </a>
+        )}
       </div>
     )
   }
@@ -84,8 +99,8 @@ export default function TransactionList() {
     <>
       <div className="mb-4 flex items-center justify-between">
         <p className="text-sm text-zinc-600 dark:text-zinc-400">
-          {transactions.length} transaction
-          {transactions.length !== 1 ? 's' : ''}
+          {filteredTransactions.length} transaction
+          {filteredTransactions.length !== 1 ? 's' : ''}
         </p>
         <button
           type="button"

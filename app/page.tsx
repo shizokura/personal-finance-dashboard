@@ -16,15 +16,39 @@ import {
   TrendTable,
   RecentTransactions,
   ExpenseChart,
+  MonthlyTrendChart,
 } from '@/components/dashboard'
-import { ChevronLeft, ChevronRight, Calendar } from 'lucide-react'
+import {
+  TrendingUp,
+  Table2,
+  ChevronLeft,
+  ChevronRight,
+  Calendar,
+} from 'lucide-react'
+import ViewToggle from '@/components/ui/ViewToggle'
 import { useDashboardData } from './dashboard/hooks'
 import { MONTH_NAMES } from '@/lib/constants'
+
+type TrendViewType = 'chart' | 'table'
 
 export default function Home() {
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth() + 1)
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear())
   const [baseCurrency] = useState<CurrencyCode>('USD')
+  const [trendView, setTrendView] = useState<TrendViewType>('chart')
+
+  const trendViewOptions = [
+    {
+      id: 'chart' as const,
+      label: 'Chart',
+      icon: TrendingUp,
+    },
+    {
+      id: 'table' as const,
+      label: 'Table',
+      icon: Table2,
+    },
+  ]
 
   const now = new Date()
   const { summary, trends, comparison, transactions, categories, isLoading } =
@@ -193,11 +217,38 @@ export default function Home() {
             currency={baseCurrency}
           />
 
-          <TrendTable
-            trends={trends}
-            currency={baseCurrency}
-            comparison={comparison || undefined}
-          />
+          {trendView === 'chart' ? (
+            <MonthlyTrendChart
+              title={
+                <div className="flex items-center justify-between">
+                  <h2>Monthly Trends</h2>
+                  <ViewToggle
+                    value={trendView}
+                    onChange={setTrendView}
+                    options={trendViewOptions}
+                  />
+                </div>
+              }
+              trends={trends}
+              currency={baseCurrency}
+            />
+          ) : (
+            <TrendTable
+              title={
+                <div className="flex items-center justify-between">
+                  <h2>Monthly Trends</h2>
+                  <ViewToggle
+                    value={trendView}
+                    onChange={setTrendView}
+                    options={trendViewOptions}
+                  />
+                </div>
+              }
+              trends={trends}
+              currency={baseCurrency}
+              comparison={comparison || undefined}
+            />
+          )}
 
           <RecentTransactions
             transactions={transactions}
