@@ -3,6 +3,7 @@ export type StorageEventType =
   | 'transactions'
   | 'accounts'
   | 'settings'
+  | 'savingsGoals'
 
 export type StorageEventData = {
   categories?: {
@@ -19,6 +20,10 @@ export type StorageEventData = {
   settings?: {
     action: 'create' | 'update' | 'delete'
     key?: string
+  }
+  savingsGoals?: {
+    action: 'create' | 'update' | 'delete'
+    savingsGoalId?: string
   }
 }
 

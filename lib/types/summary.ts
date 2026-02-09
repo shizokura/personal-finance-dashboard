@@ -1,4 +1,5 @@
 import type { TransactionType } from './transaction'
+import type { CurrencyCode } from './common'
 
 export interface MonthlySummary {
   period: {
@@ -132,4 +133,19 @@ export interface ChartDataPoint {
   label: string
   value: number
   color?: string
+}
+
+export interface SavingsGoal {
+  id: string
+  name: string
+  targetAmount: number
+  currentAmount: number
+  currency: CurrencyCode
+  status: 'notStarted' | 'inProgress' | 'completed' | 'overdue'
+  percentage: number
+  remaining: number
+  deadline?: Date
+  createdAt: Date
+  updatedAt: Date
+  processedTransactionIds?: string[]
 }

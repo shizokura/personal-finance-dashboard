@@ -45,4 +45,5 @@ export type {
   TrendComparison,
   DashboardMetrics,
   ChartDataPoint,
+  SavingsGoal,
 } from './summary'

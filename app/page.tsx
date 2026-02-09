@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import type { CurrencyCode } from '@/lib/types'
+import { useState, useEffect } from 'react'
+import type { CurrencyCode, SavingsGoal } from '@/lib/types'
 import { formatCurrency } from '@/lib/utils/format-utils'
 import {
   goToNextMonth,
@@ -17,6 +17,7 @@ import {
   RecentTransactions,
   ExpenseChart,
   MonthlyTrendChart,
+  SavingsGoalsSummary,
 } from '@/components/dashboard'
 import {
   TrendingUp,
@@ -28,6 +29,11 @@ import {
 import ViewToggle from '@/components/ui/ViewToggle'
 import { useDashboardData } from './dashboard/hooks'
 import { MONTH_NAMES } from '@/lib/constants'
+import storage, { storageEvents } from '@/lib/storage'
+import {
+  sortGoalsByPriority,
+  updateGoalsFromTransactions,
+} from '@/lib/calculations'
 
 type TrendViewType = 'chart' | 'table'
 
@@ -36,6 +42,7 @@ export default function Home() {
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear())
   const [baseCurrency] = useState<CurrencyCode>('USD')
   const [trendView, setTrendView] = useState<TrendViewType>('chart')
+  const [savingsGoals, setSavingsGoals] = useState<SavingsGoal[]>([])
 
   const trendViewOptions = [
     {
@@ -57,6 +64,23 @@ export default function Home() {
       currentYear,
       baseCurrency,
     })
+
+  useEffect(() => {
+    const loadGoals = () => {
+      const goals = storage.getSavingsGoals()
+      const updatedGoals = updateGoalsFromTransactions(goals, transactions)
+      const sorted = sortGoalsByPriority(updatedGoals)
+      setSavingsGoals(sorted)
+    }
+
+    loadGoals()
+
+    const unsubscribe = storageEvents.on('savingsGoals', loadGoals)
+
+    return () => {
+      unsubscribe?.()
+    }
+  }, [transactions])
 
   const handlePreviousMonth = () => {
     const { month, year } = goToPreviousMonthHelper(currentMonth, currentYear)
@@ -216,6 +240,8 @@ export default function Home() {
             budgets={summary?.budgetProgress || []}
             currency={baseCurrency}
           />
+
+          <SavingsGoalsSummary goals={savingsGoals} currency={baseCurrency} />
 
           {trendView === 'chart' ? (
             <MonthlyTrendChart

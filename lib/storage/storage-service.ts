@@ -1,4 +1,5 @@
 import type { Category, Transaction } from '@/lib/types'
+import type { SavingsGoal } from '@/lib/types'
 import { STORAGE_KEYS } from './keys'
 import { checkSchemaVersion, migrate } from './schema'
 import { storageEvents } from './storage-events'
@@ -178,6 +179,66 @@ class StorageService {
     delete settings[key]
     this.set(STORAGE_KEYS.SETTINGS, settings)
     storageEvents.emit('settings', { settings: { action: 'delete', key } })
+  }
+
+  getSavingsGoals(): SavingsGoal[] {
+    const savingsGoals = this.get<SavingsGoal[]>(STORAGE_KEYS.SAVINGS_GOALS, [])
+    return savingsGoals.map((goal) => ({
+      ...goal,
+      deadline: goal.deadline ? new Date(goal.deadline) : undefined,
+      createdAt: new Date(goal.createdAt),
+      updatedAt: new Date(goal.updatedAt),
+    }))
+  }
+
+  saveSavingsGoal(savingsGoal: SavingsGoal): void {
+    const savingsGoals = this.getSavingsGoals()
+    const existingIndex = savingsGoals.findIndex((g) => g.id === savingsGoal.id)
+
+    if (existingIndex >= 0) {
+      savingsGoals[existingIndex] = savingsGoal
+    } else {
+      savingsGoals.push(savingsGoal)
+    }
+
+    const serializedGoals = savingsGoals.map((goal) => ({
+      ...goal,
+      deadline: goal.deadline ? goal.deadline.toISOString() : undefined,
+      createdAt: goal.createdAt.toISOString(),
+      updatedAt: goal.updatedAt.toISOString(),
+    }))
+    this.set(STORAGE_KEYS.SAVINGS_GOALS, serializedGoals)
+    storageEvents.emit('savingsGoals', {
+      savingsGoals: {
+        action: existingIndex >= 0 ? 'update' : 'create',
+        savingsGoalId: savingsGoal.id,
+      },
+    })
+  }
+
+  saveSavingsGoals(savingsGoals: SavingsGoal[]): void {
+    const serializedGoals = savingsGoals.map((goal) => ({
+      ...goal,
+      deadline: goal.deadline ? goal.deadline.toISOString() : undefined,
+      createdAt: goal.createdAt.toISOString(),
+      updatedAt: goal.updatedAt.toISOString(),
+    }))
+    this.set(STORAGE_KEYS.SAVINGS_GOALS, serializedGoals)
+    storageEvents.emit('savingsGoals', { savingsGoals: { action: 'update' } })
+  }
+
+  deleteSavingsGoal(id: string): void {
+    const savingsGoals = this.getSavingsGoals().filter((g) => g.id !== id)
+    const serializedGoals = savingsGoals.map((goal) => ({
+      ...goal,
+      deadline: goal.deadline ? goal.deadline.toISOString() : undefined,
+      createdAt: goal.createdAt.toISOString(),
+      updatedAt: goal.updatedAt.toISOString(),
+    }))
+    this.set(STORAGE_KEYS.SAVINGS_GOALS, serializedGoals)
+    storageEvents.emit('savingsGoals', {
+      savingsGoals: { action: 'delete', savingsGoalId: id },
+    })
   }
 }
 

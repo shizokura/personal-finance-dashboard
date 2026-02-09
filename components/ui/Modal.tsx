@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
 
@@ -21,6 +21,15 @@ export default function Modal({
   maxHeight = 'max-h-[80vh]',
   children,
 }: ModalProps) {
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setMounted(true)
+    }
+  }, [])
+
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden'
@@ -33,9 +42,11 @@ export default function Modal({
     }
   }, [isOpen])
 
-  if (!isOpen) return null
+  if (!isOpen || !mounted) {
+    return null
+  }
 
-  return createPortal(
+  const portalContent = (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div
         className="fixed inset-0 bg-black/50 backdrop-blur-sm"
@@ -60,7 +71,13 @@ export default function Modal({
         )}
         <div className="flex-1 overflow-y-auto p-4 min-h-0">{children}</div>
       </div>
-    </div>,
-    document.body
+    </div>
   )
+
+  try {
+    return createPortal(portalContent, document.body)
+  } catch (error) {
+    console.error('createPortal error:', error)
+    return null
+  }
 }

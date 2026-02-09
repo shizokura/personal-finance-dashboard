@@ -1,6 +1,7 @@
 import { STORAGE_KEYS } from './keys'
+import type { SavingsGoal } from '@/lib/types'
 
-export const CURRENT_SCHEMA_VERSION = 1
+export const CURRENT_SCHEMA_VERSION = 3
 
 export type SchemaVersion = number
 
@@ -47,6 +48,14 @@ export function migrate(): void {
     migrateToV1()
   }
 
+  if (currentVersion < 2) {
+    migrateToV2()
+  }
+
+  if (currentVersion < 3) {
+    migrateToV3()
+  }
+
   updateSchemaVersion(CURRENT_SCHEMA_VERSION)
 }
 
@@ -73,5 +82,75 @@ function migrateToV1(): void {
     }
   } catch (error) {
     console.error('Migration to v1 failed:', error)
+  }
+}
+
+function migrateToV2(): void {
+  console.log('Running migration to v2')
+
+  try {
+    const savingsGoals = localStorage.getItem(STORAGE_KEYS.SAVINGS_GOALS)
+    if (!savingsGoals) {
+      localStorage.setItem(STORAGE_KEYS.SAVINGS_GOALS, JSON.stringify([]))
+    }
+  } catch (error) {
+    console.error('Migration to v2 failed:', error)
+  }
+}
+
+function migrateToV3(): void {
+  console.log('Running migration to v3')
+
+  try {
+    const savingsGoals = localStorage.getItem(STORAGE_KEYS.SAVINGS_GOALS)
+    if (savingsGoals) {
+      let goals: unknown
+      try {
+        goals = JSON.parse(savingsGoals)
+      } catch (parseError) {
+        console.error(
+          'Failed to parse savings goals during v3 migration:',
+          parseError
+        )
+        localStorage.setItem(STORAGE_KEYS.SAVINGS_GOALS, JSON.stringify([]))
+        return
+      }
+
+      if (!Array.isArray(goals)) {
+        console.error('Savings goals is not an array during v3 migration')
+        localStorage.setItem(STORAGE_KEYS.SAVINGS_GOALS, JSON.stringify([]))
+        return
+      }
+
+      const updatedGoals: SavingsGoal[] = []
+      for (const goal of goals) {
+        try {
+          if (goal && typeof goal === 'object' && 'id' in goal) {
+            updatedGoals.push({
+              ...goal,
+              processedTransactionIds: goal.processedTransactionIds || [],
+              deadline: goal.deadline
+                ? new Date(goal.deadline as string)
+                : undefined,
+              createdAt: new Date(goal.createdAt as string),
+              updatedAt: new Date(goal.updatedAt as string),
+            } as SavingsGoal)
+          }
+        } catch (goalError) {
+          console.warn(
+            `Skipping malformed savings goal during v3 migration:`,
+            goalError
+          )
+        }
+      }
+
+      localStorage.setItem(
+        STORAGE_KEYS.SAVINGS_GOALS,
+        JSON.stringify(updatedGoals)
+      )
+    }
+  } catch (error) {
+    console.error('Migration to v3 failed:', error)
+    localStorage.setItem(STORAGE_KEYS.SAVINGS_GOALS, JSON.stringify([]))
   }
 }
