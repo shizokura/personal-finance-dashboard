@@ -36,6 +36,7 @@ import type { Transaction } from '@/lib/types'
 import { useState } from 'react'
 import Link from 'next/link'
 ```
+
 - Use `import type` for type-only imports
 - External imports first, then internal with `@/` alias
 
@@ -68,6 +69,7 @@ export default function Header() {
   return <nav>...</nav>
 }
 ```
+
 - Functional components with hooks
 - `'use client'` for client components only
 - Default exports, Link from `next/link`
@@ -115,6 +117,7 @@ Next.js 16.1.6 (App Router) · React 19.2.3 · Tailwind CSS v4 · TypeScript v5 
 ## Data Layer
 
 Type-first approach. Models in `lib/types/`:
+
 - `common.ts` - Currency, DateRange, Pagination
 - `transaction.ts` - Transaction models
 - `category.ts` - Category hierarchy

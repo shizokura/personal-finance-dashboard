@@ -1,6 +1,7 @@
 import type { Category, Transaction } from '@/lib/types'
 import { STORAGE_KEYS } from './keys'
 import { checkSchemaVersion, migrate } from './schema'
+import { storageEvents } from './storage-events'
 
 class StorageService {
   private initialized = false
@@ -75,15 +76,18 @@ class StorageService {
     }
 
     this.set(STORAGE_KEYS.TRANSACTIONS, transactions)
+    storageEvents.emit('transactions', { transactions: { action: 'update', transactionId: transaction.id } })
   }
 
   saveTransactions(transactions: Transaction[]): void {
     this.set(STORAGE_KEYS.TRANSACTIONS, transactions)
+    storageEvents.emit('transactions', { transactions: { action: 'update' } })
   }
 
   deleteTransaction(id: string): void {
     const transactions = this.getTransactions().filter((t) => t.id !== id)
     this.set(STORAGE_KEYS.TRANSACTIONS, transactions)
+    storageEvents.emit('transactions', { transactions: { action: 'delete', transactionId: id } })
   }
 
   getCategories(): Category[] {
@@ -101,15 +105,18 @@ class StorageService {
     }
 
     this.set(STORAGE_KEYS.CATEGORIES, categories)
+    storageEvents.emit('categories', { categories: { action: existingIndex >= 0 ? 'update' : 'create', categoryId: category.id } })
   }
 
   saveCategories(categories: Category[]): void {
     this.set(STORAGE_KEYS.CATEGORIES, categories)
+    storageEvents.emit('categories', { categories: { action: 'update' } })
   }
 
   deleteCategory(id: string): void {
     const categories = this.getCategories().filter((c) => c.id !== id)
     this.set(STORAGE_KEYS.CATEGORIES, categories)
+    storageEvents.emit('categories', { categories: { action: 'delete', categoryId: id } })
   }
 
   getAccounts(): string[] {
@@ -118,6 +125,7 @@ class StorageService {
 
   saveAccounts(accounts: string[]): void {
     this.set(STORAGE_KEYS.ACCOUNTS, accounts)
+    storageEvents.emit('accounts', { accounts: { action: 'update' } })
   }
 
   getSettings(): Record<string, unknown> {
@@ -128,12 +136,14 @@ class StorageService {
     const settings = this.getSettings()
     settings[key] = value
     this.set(STORAGE_KEYS.SETTINGS, settings)
+    storageEvents.emit('settings', { settings: { action: 'update', key } })
   }
 
   removeSetting(key: string): void {
     const settings = this.getSettings()
     delete settings[key]
     this.set(STORAGE_KEYS.SETTINGS, settings)
+    storageEvents.emit('settings', { settings: { action: 'delete', key } })
   }
 }
 

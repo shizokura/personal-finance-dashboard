@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 import type { CurrencyCode, TransactionType } from '@/lib/types'
 import { SUPPORTED_CURRENCIES } from '@/lib/types'
 import { getDefaultCategories } from '@/lib/seed-data'
@@ -295,6 +296,12 @@ export default function TransactionForm() {
             {errors.categoryId}
           </p>
         )}
+        <Link
+          href="/categories"
+          className="mt-2 inline-flex items-center gap-1 text-sm font-medium text-zinc-600 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
+        >
+          Create new category
+        </Link>
       </div>
 
       <div>

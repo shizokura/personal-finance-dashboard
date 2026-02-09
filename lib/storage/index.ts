@@ -7,3 +7,4 @@ export {
   CURRENT_SCHEMA_VERSION,
 } from './schema'
 export type { SchemaVersion } from './schema'
+export { storageEvents } from './storage-events'
