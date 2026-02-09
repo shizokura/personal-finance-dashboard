@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import type { CurrencyCode, TransactionType } from '@/lib/types'
+import type { CurrencyCode, TransactionType, Transaction } from '@/lib/types'
 import { SUPPORTED_CURRENCIES } from '@/lib/types'
 import { getDefaultCategories } from '@/lib/seed-data'
 import storage from '@/lib/storage'
-import type { Category, Transaction, Metadata } from '@/lib/types'
+import type { Category, Metadata } from '@/lib/types'
 import { CheckCircle } from 'lucide-react'
 
 interface FormErrors {
@@ -15,27 +15,46 @@ interface FormErrors {
   categoryId?: string
 }
 
-export default function TransactionForm() {
-  const [transactionType, setTransactionType] =
-    useState<TransactionType>('income')
-  const [amount, setAmount] = useState('')
-  const [currency, setCurrency] = useState<CurrencyCode>('USD')
-  const [date, setDate] = useState(new Date().toISOString().split('T')[0])
-  const [description, setDescription] = useState('')
-  const [categoryId, setCategoryId] = useState('')
-  const [notes, setNotes] = useState('')
+interface TransactionFormProps {
+  transaction?: Transaction
+  onCancel?: () => void
+  onSuccess?: () => void
+}
+
+export default function TransactionForm({
+  transaction,
+  onCancel,
+  onSuccess,
+}: TransactionFormProps) {
+  const [transactionType, setTransactionType] = useState<TransactionType>(
+    transaction?.type ?? 'income'
+  )
+  const [amount, setAmount] = useState(transaction?.amount.toString() ?? '')
+  const [currency, setCurrency] = useState<CurrencyCode>(
+    transaction?.currency ?? 'USD'
+  )
+  const [date, setDate] = useState(
+    transaction?.date.toISOString().split('T')[0] ??
+      new Date().toISOString().split('T')[0]
+  )
+  const [description, setDescription] = useState(transaction?.description ?? '')
+  const [categoryId, setCategoryId] = useState(transaction?.categoryId ?? '')
+  const [notes, setNotes] = useState(transaction?.metadata?.notes ?? '')
   const [categories, setCategories] = useState<Category[]>([])
   const [errors, setErrors] = useState<FormErrors>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [successMessage, setSuccessMessage] = useState('')
+  const isEditMode = !!transaction
 
   useEffect(() => {
     const categoryType: 'income' | 'expense' =
       transactionType === 'income' ? 'income' : 'expense'
     const cats = getDefaultCategories(categoryType)
     setCategories(cats)
-    setCategoryId(cats[0]?.id || '')
-  }, [transactionType])
+    if (!transaction && !categoryId) {
+      setCategoryId(cats[0]?.id || '')
+    }
+  }, [transactionType, transaction, categoryId])
 
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {}
@@ -75,40 +94,57 @@ export default function TransactionForm() {
         metadata.notes = notes.trim()
       }
 
-      const newTransaction: Transaction = {
-        id: `txn_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-        type: transactionType,
-        status: 'completed',
-        amount: parseFloat(amount),
-        currency,
-        date: transactionDate,
-        description: description.trim(),
-        categoryId,
-        attachments: [],
-        metadata,
-        createdAt: now,
-        updatedAt: now,
+      if (isEditMode && transaction) {
+        const updatedTransaction: Transaction = {
+          ...transaction,
+          type: transactionType,
+          amount: parseFloat(amount),
+          currency,
+          date: transactionDate,
+          description: description.trim(),
+          categoryId,
+          metadata,
+          updatedAt: now,
+        }
+
+        storage.saveTransaction(updatedTransaction)
+        onSuccess?.()
+      } else {
+        const newTransaction: Transaction = {
+          id: `txn_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+          type: transactionType,
+          status: 'completed',
+          amount: parseFloat(amount),
+          currency,
+          date: transactionDate,
+          description: description.trim(),
+          categoryId,
+          attachments: [],
+          metadata,
+          createdAt: now,
+          updatedAt: now,
+        }
+
+        storage.saveTransaction(newTransaction)
+
+        setSuccessMessage(
+          `${transactionType === 'income' ? 'Income' : 'Expense'} saved successfully!`
+        )
+
+        setTimeout(() => {
+          setSuccessMessage('')
+        }, 3000)
+
+        setAmount('')
+        setDescription('')
+        setNotes('')
+        setDate(new Date().toISOString().split('T')[0])
+
+        const categoryType: 'income' | 'expense' =
+          transactionType === 'income' ? 'income' : 'expense'
+        const defaultCat = getDefaultCategories(categoryType)[0]
+        setCategoryId(defaultCat?.id || '')
       }
-
-      storage.saveTransaction(newTransaction)
-
-      setSuccessMessage(
-        `${transactionType === 'income' ? 'Income' : 'Expense'} saved successfully!`
-      )
-
-      setTimeout(() => {
-        setSuccessMessage('')
-      }, 3000)
-
-      setAmount('')
-      setDescription('')
-      setNotes('')
-      setDate(new Date().toISOString().split('T')[0])
-
-      const categoryType: 'income' | 'expense' =
-        transactionType === 'income' ? 'income' : 'expense'
-      const defaultCat = getDefaultCategories(categoryType)[0]
-      setCategoryId(defaultCat?.id || '')
     } catch (error) {
       console.error('Error saving transaction:', error)
       setErrors({ description: 'Failed to save transaction' })
@@ -322,6 +358,16 @@ export default function TransactionForm() {
       </div>
 
       <div className="flex items-center justify-end gap-3">
+        {onCancel && (
+          <button
+            type="button"
+            onClick={onCancel}
+            disabled={isSubmitting}
+            className="rounded-lg border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 disabled:opacity-50 disabled:cursor-not-allowed dark:border-zinc-600 dark:text-zinc-300 dark:hover:bg-zinc-800"
+          >
+            Cancel
+          </button>
+        )}
         <button
           type="submit"
           disabled={isSubmitting}
@@ -333,7 +379,9 @@ export default function TransactionForm() {
         >
           {isSubmitting
             ? 'Saving...'
-            : `Save ${isIncome ? 'Income' : 'Expense'}`}
+            : isEditMode
+              ? 'Update Transaction'
+              : `Save ${isIncome ? 'Income' : 'Expense'}`}
         </button>
       </div>
     </form>

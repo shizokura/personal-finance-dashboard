@@ -222,7 +222,11 @@ export default function IconPicker({
         </button>
       </div>
 
-      <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} title="Choose Icon">
+      <Modal
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        title="Choose Icon"
+      >
         <div className="space-y-4">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />

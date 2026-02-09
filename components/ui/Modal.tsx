@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
 
@@ -20,6 +21,18 @@ export default function Modal({
   maxHeight = 'max-h-[80vh]',
   children,
 }: ModalProps) {
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [isOpen])
+
   if (!isOpen) return null
 
   return createPortal(
@@ -45,9 +58,7 @@ export default function Modal({
             </button>
           </div>
         )}
-        <div className="flex-1 overflow-y-auto p-4 min-h-0">
-          {children}
-        </div>
+        <div className="flex-1 overflow-y-auto p-4 min-h-0">{children}</div>
       </div>
     </div>,
     document.body

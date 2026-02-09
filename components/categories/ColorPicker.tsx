@@ -151,7 +151,12 @@ export default function ColorPicker({ value, onChange }: ColorPickerProps) {
         </button>
       </div>
 
-      <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} title="Color Picker" maxWidth="max-w-sm">
+      <Modal
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        title="Color Picker"
+        maxWidth="max-w-sm"
+      >
         <div className="space-y-4">
           <div className="flex justify-center">
             <canvas

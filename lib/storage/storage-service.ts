@@ -62,7 +62,13 @@ class StorageService {
   }
 
   getTransactions(): Transaction[] {
-    return this.get<Transaction[]>(STORAGE_KEYS.TRANSACTIONS, [])
+    const transactions = this.get<Transaction[]>(STORAGE_KEYS.TRANSACTIONS, [])
+    return transactions.map((txn) => ({
+      ...txn,
+      date: new Date(txn.date),
+      createdAt: new Date(txn.createdAt),
+      updatedAt: new Date(txn.updatedAt),
+    }))
   }
 
   saveTransaction(transaction: Transaction): void {
@@ -76,7 +82,9 @@ class StorageService {
     }
 
     this.set(STORAGE_KEYS.TRANSACTIONS, transactions)
-    storageEvents.emit('transactions', { transactions: { action: 'update', transactionId: transaction.id } })
+    storageEvents.emit('transactions', {
+      transactions: { action: 'update', transactionId: transaction.id },
+    })
   }
 
   saveTransactions(transactions: Transaction[]): void {
@@ -87,11 +95,18 @@ class StorageService {
   deleteTransaction(id: string): void {
     const transactions = this.getTransactions().filter((t) => t.id !== id)
     this.set(STORAGE_KEYS.TRANSACTIONS, transactions)
-    storageEvents.emit('transactions', { transactions: { action: 'delete', transactionId: id } })
+    storageEvents.emit('transactions', {
+      transactions: { action: 'delete', transactionId: id },
+    })
   }
 
   getCategories(): Category[] {
-    return this.get<Category[]>(STORAGE_KEYS.CATEGORIES, [])
+    const categories = this.get<Category[]>(STORAGE_KEYS.CATEGORIES, [])
+    return categories.map((cat) => ({
+      ...cat,
+      createdAt: new Date(cat.createdAt),
+      updatedAt: new Date(cat.updatedAt),
+    }))
   }
 
   saveCategory(category: Category): void {
@@ -105,7 +120,12 @@ class StorageService {
     }
 
     this.set(STORAGE_KEYS.CATEGORIES, categories)
-    storageEvents.emit('categories', { categories: { action: existingIndex >= 0 ? 'update' : 'create', categoryId: category.id } })
+    storageEvents.emit('categories', {
+      categories: {
+        action: existingIndex >= 0 ? 'update' : 'create',
+        categoryId: category.id,
+      },
+    })
   }
 
   saveCategories(categories: Category[]): void {
@@ -116,7 +136,9 @@ class StorageService {
   deleteCategory(id: string): void {
     const categories = this.getCategories().filter((c) => c.id !== id)
     this.set(STORAGE_KEYS.CATEGORIES, categories)
-    storageEvents.emit('categories', { categories: { action: 'delete', categoryId: id } })
+    storageEvents.emit('categories', {
+      categories: { action: 'delete', categoryId: id },
+    })
   }
 
   getAccounts(): string[] {

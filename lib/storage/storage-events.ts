@@ -1,4 +1,8 @@
-export type StorageEventType = 'categories' | 'transactions' | 'accounts' | 'settings'
+export type StorageEventType =
+  | 'categories'
+  | 'transactions'
+  | 'accounts'
+  | 'settings'
 
 export type StorageEventData = {
   categories?: {
@@ -21,14 +25,15 @@ export type StorageEventData = {
 export type StorageEventCallback = (data: StorageEventData) => void
 
 class StorageEvents {
-  private listeners: Map<StorageEventType, Set<StorageEventCallback>> = new Map()
+  private listeners: Map<StorageEventType, Set<StorageEventCallback>> =
+    new Map()
 
   on(event: StorageEventType, callback: StorageEventCallback): () => void {
     if (!this.listeners.has(event)) {
       this.listeners.set(event, new Set())
     }
     this.listeners.get(event)!.add(callback)
-    
+
     return () => this.off(event, callback)
   }
 

@@ -15,6 +15,7 @@ npx tsc --noEmit         # TypeScript type check
 ### Testing
 
 No test framework configured yet. When adding tests:
+
 - Install Jest or Vitest
 - Run single test: `npm test -- path/to/test.spec.ts` or `npm test -- --testNamePattern="pattern"`
 - Use `npm run lint` + `npx tsc --noEmit` for validation
