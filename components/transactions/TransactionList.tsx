@@ -53,13 +53,18 @@ export default function TransactionList({ filters }: TransactionListProps) {
     )
   }, [filteredTransactions, sortDirection])
 
-  const { currentPage, totalPages, startRange, endRange, setCurrentPage } =
-    usePagination({
-      totalItems: sortedTransactions.length,
-      itemsPerPage: ITEMS_PER_PAGE,
-    })
+  const {
+    currentPage,
+    totalPages,
+    startRange,
+    endRange,
+    offset,
+    setCurrentPage,
+  } = usePagination({
+    totalItems: sortedTransactions.length,
+    itemsPerPage: ITEMS_PER_PAGE,
+  })
 
-  const offset = (currentPage - 1) * ITEMS_PER_PAGE
   const paginatedTransactions = sortedTransactions.slice(
     offset,
     offset + ITEMS_PER_PAGE

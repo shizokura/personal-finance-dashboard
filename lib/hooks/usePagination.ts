@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback } from 'react'
-import { calculatePagination, safePage } from '@/lib/utils/pagination-utils'
+import { calculatePagination } from '@/lib/utils/pagination-utils'
 
 interface UsePaginationOptions {
   totalItems: number
@@ -9,10 +9,10 @@ interface UsePaginationOptions {
 
 interface UsePaginationReturn {
   currentPage: number
-  safeCurrentPage: number
   totalPages: number
   startRange: number
   endRange: number
+  offset: number
   setCurrentPage: (page: number) => void
 }
 
@@ -23,28 +23,35 @@ export function usePagination({
 }: UsePaginationOptions): UsePaginationReturn {
   const [currentPage, setCurrentPageState] = useState(1)
 
-  const { totalPages, startRange, endRange } = useMemo(() => {
+  const { totalPages, offset: rawOffset } = useMemo(() => {
     return calculatePagination(totalItems, currentPage, itemsPerPage)
   }, [totalItems, currentPage, itemsPerPage])
 
-  const safeCurrentPage = useMemo(() => {
-    return safePage(currentPage, totalPages)
-  }, [currentPage, totalPages])
+  const safeCurrentPage = Math.min(currentPage, Math.max(1, totalPages))
+
+  const offset =
+    safeCurrentPage === currentPage
+      ? rawOffset
+      : (safeCurrentPage - 1) * itemsPerPage
+
+  const finalStartRange = totalItems > 0 ? offset + 1 : 0
+  const finalEndRange = Math.min(offset + itemsPerPage, totalItems)
 
   const setCurrentPage = useCallback(
     (page: number) => {
-      setCurrentPageState(page)
-      onPageChange?.(page)
+      const safePage = Math.min(page, Math.max(1, totalPages))
+      setCurrentPageState(safePage)
+      onPageChange?.(safePage)
     },
-    [onPageChange]
+    [onPageChange, totalPages]
   )
 
   return {
-    currentPage,
-    safeCurrentPage,
+    currentPage: safeCurrentPage,
     totalPages,
-    startRange,
-    endRange,
+    startRange: finalStartRange,
+    endRange: finalEndRange,
+    offset,
     setCurrentPage,
   }
 }

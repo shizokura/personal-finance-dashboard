@@ -38,8 +38,7 @@ export function calculatePagination(
   itemsPerPage: number
 ) {
   const totalPages = Math.ceil(totalItems / itemsPerPage) || 1
-  const safeCurrentPage = safePage(currentPage, totalPages)
-  const offset = (safeCurrentPage - 1) * itemsPerPage
+  const offset = (currentPage - 1) * itemsPerPage
   const startRange = totalItems > 0 ? offset + 1 : 0
   const endRange = Math.min(offset + itemsPerPage, totalItems)
 
@@ -49,11 +48,4 @@ export function calculatePagination(
     startRange,
     endRange,
   }
-}
-
-export function safePage(currentPage: number, totalPages: number): number {
-  if (currentPage > totalPages) {
-    return 1
-  }
-  return currentPage
 }
