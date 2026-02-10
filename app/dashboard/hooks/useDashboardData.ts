@@ -24,6 +24,7 @@ interface UseDashboardDataReturn {
   transactions: Transaction[]
   categories: Category[]
   isLoading: boolean
+  error: Error | null
 }
 
 export function useDashboardData({
@@ -37,11 +38,13 @@ export function useDashboardData({
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [categories, setCategories] = useState<Category[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<Error | null>(null)
 
   useEffect(() => {
     const loadData = () => {
       try {
         setIsLoading(true)
+        setError(null)
         const txns: Transaction[] = storage.getTransactions()
         const cats: Category[] = storage.getCategories()
 
@@ -76,8 +79,9 @@ export function useDashboardData({
         } else {
           setComparison(null)
         }
-      } catch (error) {
-        console.error('Error loading dashboard data:', error)
+      } catch (err) {
+        console.error('Error loading dashboard data:', err)
+        setError(err as Error)
       } finally {
         setIsLoading(false)
       }
@@ -101,5 +105,6 @@ export function useDashboardData({
     transactions,
     categories,
     isLoading,
+    error,
   }
 }

@@ -1,4 +1,5 @@
 import { RefreshCw, AlertCircle, Inbox } from 'lucide-react'
+import Link from 'next/link'
 
 type EmptyStateVariant = 'empty' | 'loading' | 'error'
 
@@ -8,7 +9,8 @@ interface EmptyStateProps {
   variant?: EmptyStateVariant
   action?: {
     label: string
-    onClick: () => void
+    onClick?: () => void
+    href?: string
   }
 }
 
@@ -38,13 +40,24 @@ export default function EmptyState({
       <div className={`mb-3 ${iconColor}`}>{displayIcon}</div>
       <p className="text-sm text-zinc-600 dark:text-zinc-400">{message}</p>
       {action && (
-        <button
-          type="button"
-          onClick={action.onClick}
-          className="mt-3 rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
-        >
-          {action.label}
-        </button>
+        <>
+          {action.href ? (
+            <Link
+              href={action.href}
+              className="mt-3 rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+            >
+              {action.label}
+            </Link>
+          ) : (
+            <button
+              type="button"
+              onClick={action.onClick}
+              className="mt-3 rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+            >
+              {action.label}
+            </button>
+          )}
+        </>
       )}
     </div>
   )

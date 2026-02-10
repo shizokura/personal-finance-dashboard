@@ -12,11 +12,11 @@ import {
   Edit2,
   Trash2,
   Plus,
-  Target,
   Calendar,
   CheckCircle2,
   AlertCircle,
 } from 'lucide-react'
+import EmptyState from '@/components/ui/EmptyState'
 import SavingsGoalModal from './SavingsGoalModal'
 import DeleteConfirmation from './DeleteConfirmation'
 
@@ -56,23 +56,14 @@ export default function SavingsGoalsList({
   if (goals.length === 0) {
     return (
       <>
-        <div className="rounded-lg border border-dashed border-zinc-300 bg-zinc-50 p-12 text-center dark:border-zinc-700 dark:bg-zinc-900">
-          <Target className="mx-auto h-12 w-12 text-zinc-400 dark:text-zinc-600" />
-          <h3 className="mt-4 text-lg font-medium text-zinc-900 dark:text-zinc-50">
-            No savings goals yet
-          </h3>
-          <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-            Create your first savings goal to start tracking your progress.
-          </p>
-          <button
-            type="button"
-            onClick={handleAddGoal}
-            className="mt-4 inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700"
-          >
-            <Plus className="h-4 w-4" />
-            Create Goal
-          </button>
-        </div>
+        <EmptyState
+          variant="empty"
+          message="No savings goals yet"
+          action={{
+            label: 'Create Goal',
+            onClick: handleAddGoal,
+          }}
+        />
         <SavingsGoalModal
           isOpen={isModalOpen}
           onClose={handleModalClose}

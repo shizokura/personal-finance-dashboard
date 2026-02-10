@@ -1,13 +1,15 @@
 'use client'
 
-import { useState, useMemo, useEffect } from 'react'
-import type { TransactionFilter, Transaction, Category } from '@/lib/types'
+import { useState, useMemo } from 'react'
+import type { TransactionFilter } from '@/lib/types'
 import { filterTransactions } from '@/lib/calculations/filter-helpers'
 import TransactionList from '@/components/transactions/TransactionList'
 import TransactionFilterPanel from '@/components/transactions/TransactionFilterPanel'
 import Link from 'next/link'
+import EmptyState from '@/components/ui/EmptyState'
 import storage from '@/lib/storage'
 import { Plus } from 'lucide-react'
+import { useAsyncLoader } from '@/lib/hooks'
 
 export default function TransactionsPage() {
   const [filters, setFilters] = useState<TransactionFilter>({
@@ -15,29 +17,34 @@ export default function TransactionsPage() {
     categories: [],
     dateRange: undefined,
   })
-  const [allTransactions, setAllTransactions] = useState<Transaction[]>([])
-  const [categories, setCategories] = useState<Category[]>([])
-  const [hasLoaded, setHasLoaded] = useState(false)
 
-  useEffect(() => {
-    const loadData = () => {
-      setAllTransactions(storage.getTransactions())
-      setCategories(storage.getCategories())
-      setHasLoaded(true)
-    }
-    loadData()
-  }, [])
+  const {
+    data: dataLoaded,
+    error,
+    reload: loadData,
+  } = useAsyncLoader({
+    loader: () => ({
+      transactions: storage.getTransactions(),
+      categories: storage.getCategories(),
+    }),
+  })
+
+  const allTransactions = useMemo(
+    () => dataLoaded?.transactions || [],
+    [dataLoaded]
+  )
+  const categories = useMemo(() => dataLoaded?.categories || [], [dataLoaded])
 
   const filteredTransactions = useMemo(() => {
-    if (!hasLoaded) return []
+    if (!dataLoaded) return []
     return filterTransactions(allTransactions, filters, categories)
-  }, [allTransactions, filters, categories, hasLoaded])
+  }, [allTransactions, filters, categories, dataLoaded])
 
   const handleFilterChange = (newFilters: TransactionFilter) => {
     setFilters(newFilters)
   }
 
-  if (!hasLoaded) {
+  if (!dataLoaded) {
     return (
       <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
         <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
@@ -58,6 +65,20 @@ export default function TransactionsPage() {
               <span>Add Transaction</span>
             </Link>
           </div>
+          <EmptyState
+            variant={error ? 'error' : 'loading'}
+            message={
+              error ? 'Failed to load transactions' : 'Loading transactions...'
+            }
+            action={
+              error
+                ? {
+                    label: 'Retry',
+                    onClick: loadData,
+                  }
+                : undefined
+            }
+          />
         </div>
       </div>
     )

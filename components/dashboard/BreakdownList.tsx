@@ -7,6 +7,7 @@ import type {
 } from '@/lib/types'
 import { formatCurrency } from '@/lib/utils/format-utils'
 import CardContainer from '@/components/layout/CardContainer'
+import EmptyState from '@/components/ui/EmptyState'
 
 interface BreakdownListProps {
   title: string
@@ -26,9 +27,10 @@ export default function BreakdownList({
   return (
     <CardContainer title={title}>
       {breakdown.length === 0 ? (
-        <p className="mt-4 text-sm text-zinc-600 dark:text-zinc-400">
-          No data available for this period.
-        </p>
+        <EmptyState
+          variant="empty"
+          message="No data available for this period"
+        />
       ) : (
         <div className="mt-4 space-y-4">
           {breakdown.map((item) => {

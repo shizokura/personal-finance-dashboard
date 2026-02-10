@@ -7,6 +7,7 @@ import { kebabToPascal } from '@/lib/utils/icon-helpers'
 import * as Icons from 'lucide-react'
 import Link from 'next/link'
 import CardContainer from '@/components/layout/CardContainer'
+import EmptyState from '@/components/ui/EmptyState'
 
 interface RecentTransactionsProps {
   transactions: Transaction[]
@@ -38,17 +39,14 @@ export default function RecentTransactions({
   if (sortedTransactions.length === 0) {
     return (
       <CardContainer title="Recent Transactions">
-        <div className="mt-4 flex flex-col items-center justify-center py-8">
-          <p className="text-sm text-zinc-600 dark:text-zinc-400">
-            No transactions yet
-          </p>
-          <Link
-            href="/add-entry"
-            className="mt-4 rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-700 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
-          >
-            Add Transaction
-          </Link>
-        </div>
+        <EmptyState
+          variant="empty"
+          message="No transactions yet"
+          action={{
+            label: 'Add Transaction',
+            href: '/add-entry',
+          }}
+        />
       </CardContainer>
     )
   }

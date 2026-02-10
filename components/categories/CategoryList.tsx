@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react'
 import type { Category, CategoryType } from '@/lib/types'
 import CategoryCard from './CategoryCard'
+import EmptyState from '@/components/ui/EmptyState'
 import { ChevronDown, ChevronRight, FolderPlus } from 'lucide-react'
 
 interface CategoryListProps {
@@ -154,26 +155,14 @@ export default function CategoryList({
 
   if (flatList.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-zinc-200 bg-zinc-50 py-12 dark:border-zinc-700 dark:bg-zinc-800">
-        <FolderPlus className="mb-3 h-12 w-12 text-zinc-400" />
-        <h3 className="mb-1 text-sm font-medium text-zinc-900 dark:text-zinc-50">
-          No {type} categories
-        </h3>
-        <p className="mb-4 text-sm text-zinc-500 dark:text-zinc-400">
-          Get started by adding your first {type} category
-        </p>
-        <button
-          type="button"
-          onClick={onAdd}
-          className={`rounded-lg px-4 py-2 text-sm font-medium text-white transition-colors hover:opacity-90 ${
-            type === 'income'
-              ? 'bg-green-600 hover:bg-green-700 dark:bg-green-600 dark:hover:bg-green-700'
-              : 'bg-red-600 hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-700'
-          }`}
-        >
-          Add Category
-        </button>
-      </div>
+      <EmptyState
+        variant="empty"
+        message={`No ${type} categories`}
+        action={{
+          label: 'Add Category',
+          onClick: onAdd,
+        }}
+      />
     )
   }
 

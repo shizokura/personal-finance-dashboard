@@ -1,11 +1,13 @@
 'use client'
 
-import type { Category, CurrencyCode } from '@/lib/types'
+import type { CurrencyCode } from '@/lib/types'
 import { formatCurrency } from '@/lib/utils/format-utils'
 import { useState, useEffect } from 'react'
 import * as Icons from 'lucide-react'
 import storage, { storageEvents } from '@/lib/storage'
 import { kebabToPascal } from '@/lib/utils/icon-helpers'
+import EmptyState from '@/components/ui/EmptyState'
+import { useAsyncLoader } from '@/lib/hooks'
 
 interface IconProps {
   className?: string
@@ -17,15 +19,17 @@ interface BudgetManagementProps {
 }
 
 export default function BudgetManagement({ currency }: BudgetManagementProps) {
-  const [categories, setCategories] = useState<Category[]>([])
   const [budgets, setBudgets] = useState<Record<string, string>>({})
   const [isSaving, setIsSaving] = useState(false)
 
-  useEffect(() => {
-    const loadCategories = () => {
+  const {
+    data: categories,
+    isLoading,
+    error,
+    reload: reloadCategories,
+  } = useAsyncLoader({
+    loader: () => {
       const cats = storage.getCategories()
-      setCategories(cats)
-
       const budgetMap: Record<string, string> = {}
       cats.forEach((cat) => {
         if (cat.budgetLimit) {
@@ -33,16 +37,17 @@ export default function BudgetManagement({ currency }: BudgetManagementProps) {
         }
       })
       setBudgets(budgetMap)
-    }
+      return cats
+    },
+  })
 
-    loadCategories()
-
-    const unsubscribe = storageEvents.on('categories', loadCategories)
+  useEffect(() => {
+    const unsubscribe = storageEvents.on('categories', reloadCategories)
 
     return () => {
       unsubscribe?.()
     }
-  }, [])
+  }, [reloadCategories])
 
   const handleBudgetChange = (categoryId: string, value: string) => {
     setBudgets((prev) => ({
@@ -52,6 +57,8 @@ export default function BudgetManagement({ currency }: BudgetManagementProps) {
   }
 
   const handleSaveBudgets = async () => {
+    if (!categories) return
+
     setIsSaving(true)
 
     try {
@@ -70,7 +77,7 @@ export default function BudgetManagement({ currency }: BudgetManagementProps) {
       })
 
       storage.saveCategories(updatedCategories)
-      setCategories(updatedCategories)
+      reloadCategories()
     } catch (error) {
       console.error('Error saving budgets:', error)
     } finally {
@@ -78,7 +85,8 @@ export default function BudgetManagement({ currency }: BudgetManagementProps) {
     }
   }
 
-  const expenseCategories = categories.filter((cat) => cat.type === 'expense')
+  const expenseCategories =
+    categories?.filter((cat) => cat.type === 'expense') || []
 
   return (
     <div className="space-y-4">
@@ -96,12 +104,19 @@ export default function BudgetManagement({ currency }: BudgetManagementProps) {
         </button>
       </div>
 
-      {expenseCategories.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-zinc-300 bg-zinc-50 p-12 text-center dark:border-zinc-700 dark:bg-zinc-900">
-          <p className="text-sm text-zinc-600 dark:text-zinc-400">
-            No expense categories found. Add expense categories to set budgets.
-          </p>
-        </div>
+      {isLoading ? (
+        <EmptyState variant="loading" message="Loading budgets..." />
+      ) : error ? (
+        <EmptyState
+          variant="error"
+          message="Failed to load budgets"
+          action={{
+            label: 'Retry',
+            onClick: reloadCategories,
+          }}
+        />
+      ) : expenseCategories.length === 0 ? (
+        <EmptyState variant="empty" message="No expense categories found" />
       ) : (
         <div className="space-y-3">
           {expenseCategories.map((category) => {

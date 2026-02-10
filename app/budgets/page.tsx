@@ -6,7 +6,9 @@ import type { SavingsGoal, CurrencyCode } from '@/lib/types'
 import storage, { storageEvents } from '@/lib/storage'
 import BudgetManagement from '@/components/budgets/BudgetManagement'
 import SavingsGoalsList from '@/components/savings-goals/SavingsGoalsList'
+import EmptyState from '@/components/ui/EmptyState'
 import { sortGoalsByPriority } from '@/lib/calculations'
+import { useAsyncLoader } from '@/lib/hooks'
 
 export default function BudgetsPage() {
   const searchParams = useSearchParams()
@@ -16,23 +18,26 @@ export default function BudgetsPage() {
     isValidTab ? tabParam : 'budgets'
   )
   const [baseCurrency] = useState<CurrencyCode>('USD')
-  const [savingsGoals, setSavingsGoals] = useState<SavingsGoal[]>([])
+
+  const {
+    data: savingsGoals,
+    isLoading,
+    error,
+    reload: loadGoals,
+  } = useAsyncLoader({
+    loader: () => {
+      const goals = storage.getSavingsGoals()
+      return sortGoalsByPriority(goals)
+    },
+  })
 
   useEffect(() => {
-    const loadGoals = () => {
-      const goals = storage.getSavingsGoals()
-      const sorted = sortGoalsByPriority(goals)
-      setSavingsGoals(sorted)
-    }
-
-    loadGoals()
-
     const unsubscribe = storageEvents.on('savingsGoals', loadGoals)
 
     return () => {
       unsubscribe?.()
     }
-  }, [])
+  }, [loadGoals])
 
   const handleDeleteGoal = (goal: SavingsGoal) => {
     storage.deleteSavingsGoal(goal.id)
@@ -78,13 +83,30 @@ export default function BudgetsPage() {
         </div>
       </div>
 
-      {activeTab === 'budgets' && <BudgetManagement currency={baseCurrency} />}
-
-      {activeTab === 'savings' && (
-        <SavingsGoalsList
-          goals={savingsGoals}
-          onDeleteGoal={handleDeleteGoal}
+      {isLoading ? (
+        <EmptyState variant="loading" message="Loading..." />
+      ) : error ? (
+        <EmptyState
+          variant="error"
+          message="Failed to load data"
+          action={{
+            label: 'Retry',
+            onClick: loadGoals,
+          }}
         />
+      ) : (
+        <>
+          {activeTab === 'budgets' && (
+            <BudgetManagement currency={baseCurrency} />
+          )}
+
+          {activeTab === 'savings' && savingsGoals && (
+            <SavingsGoalsList
+              goals={savingsGoals}
+              onDeleteGoal={handleDeleteGoal}
+            />
+          )}
+        </>
       )}
     </div>
   )

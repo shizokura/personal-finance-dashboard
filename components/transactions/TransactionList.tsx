@@ -9,8 +9,9 @@ import TransactionCard from './TransactionCard'
 import TransactionModal from './TransactionModal'
 import DeleteConfirmation from './DeleteConfirmation'
 import Pagination from '@/components/ui/Pagination'
+import EmptyState from '@/components/ui/EmptyState'
 import storage, { storageEvents } from '@/lib/storage'
-import { ArrowUp, ArrowDown, FolderOpen } from 'lucide-react'
+import { ArrowUp, ArrowDown } from 'lucide-react'
 
 interface TransactionListProps {
   filters?: TransactionFilter
@@ -91,27 +92,24 @@ export default function TransactionList({ filters }: TransactionListProps) {
 
   if (filteredTransactions.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-zinc-200 bg-zinc-50 py-12 dark:border-zinc-700 dark:bg-zinc-800">
-        <FolderOpen className="mb-3 h-12 w-12 text-zinc-400" />
-        <h3 className="mb-1 text-sm font-medium text-zinc-900 dark:text-zinc-50">
-          {transactions.length === 0
+      <EmptyState
+        variant="empty"
+        message={
+          transactions.length === 0
             ? 'No transactions yet'
-            : 'No transactions match your filters'}
-        </h3>
-        <p className="mb-4 text-sm text-zinc-500 dark:text-zinc-400">
-          {transactions.length === 0
-            ? 'Get started by adding your first transaction'
-            : 'Try adjusting your search or filters'}
-        </p>
-        {transactions.length === 0 && (
-          <a
-            href="/add-entry"
-            className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-700 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
-          >
-            Add Transaction
-          </a>
-        )}
-      </div>
+            : 'No transactions match your filters'
+        }
+        action={
+          transactions.length === 0
+            ? {
+                label: 'Add Transaction',
+                onClick: () => {
+                  window.location.href = '/add-entry'
+                },
+              }
+            : undefined
+        }
+      />
     )
   }
 

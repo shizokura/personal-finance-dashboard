@@ -7,6 +7,7 @@ import { seedDefaultCategories } from '@/lib/seed-data'
 import CategoryModal from '@/components/categories/CategoryModal'
 import CategoryList from '@/components/categories/CategoryList'
 import DeleteConfirmation from '@/components/categories/DeleteConfirmation'
+import EmptyState from '@/components/ui/EmptyState'
 import {
   canDeleteCategory,
   getAllTransactionCount,
@@ -14,9 +15,9 @@ import {
   reassignTransactions,
   deleteCategoryWithDependencies,
 } from '@/lib/storage/category-helpers'
+import { useAsyncLoader } from '@/lib/hooks'
 
 export default function CategoriesPage() {
-  const [categories, setCategories] = useState<Category[]>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingCategory, setEditingCategory] = useState<Category | undefined>(
     undefined
@@ -25,11 +26,20 @@ export default function CategoriesPage() {
     undefined
   )
 
-  /* eslint-disable react-hooks/set-state-in-effect */
-  useEffect(() => {
-    seedDefaultCategories()
-    setCategories(storage.getCategories())
+  const {
+    data: categories,
+    isLoading,
+    error,
+    reload: loadCategories,
+    setData: setCategories,
+  } = useAsyncLoader({
+    loader: () => {
+      seedDefaultCategories()
+      return storage.getCategories()
+    },
+  })
 
+  useEffect(() => {
     const handleCategoriesChange = () => {
       setCategories(storage.getCategories())
     }
@@ -39,8 +49,7 @@ export default function CategoriesPage() {
     return () => {
       storageEvents.off('categories', handleCategoriesChange)
     }
-  }, [])
-  /* eslint-enable react-hooks/set-state-in-effect */
+  }, [setCategories])
 
   const handleAddCategory = () => {
     setEditingCategory(undefined)
@@ -106,23 +115,36 @@ export default function CategoriesPage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-          <CategoryList
-            categories={categories}
-            type="income"
-            onEdit={handleEditCategory}
-            onDelete={handleDeleteCategory}
-            onAdd={handleAddCategory}
+        {isLoading ? (
+          <EmptyState variant="loading" message="Loading categories..." />
+        ) : error ? (
+          <EmptyState
+            variant="error"
+            message="Failed to load categories"
+            action={{
+              label: 'Retry',
+              onClick: loadCategories,
+            }}
           />
+        ) : categories ? (
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+            <CategoryList
+              categories={categories}
+              type="income"
+              onEdit={handleEditCategory}
+              onDelete={handleDeleteCategory}
+              onAdd={handleAddCategory}
+            />
 
-          <CategoryList
-            categories={categories}
-            type="expense"
-            onEdit={handleEditCategory}
-            onDelete={handleDeleteCategory}
-            onAdd={handleAddCategory}
-          />
-        </div>
+            <CategoryList
+              categories={categories}
+              type="expense"
+              onEdit={handleEditCategory}
+              onDelete={handleDeleteCategory}
+              onAdd={handleAddCategory}
+            />
+          </div>
+        ) : null}
       </div>
 
       {isModalOpen && (
@@ -147,7 +169,7 @@ export default function CategoriesPage() {
               transactionCount={check.transactionCount}
               hasChildCategories={check.hasChildCategories}
               childCategoryCount={check.childCategoryCount}
-              otherCategories={categories}
+              otherCategories={categories || []}
             />
           )
         })()}

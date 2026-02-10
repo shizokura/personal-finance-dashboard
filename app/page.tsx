@@ -27,6 +27,7 @@ import {
   Calendar,
 } from 'lucide-react'
 import ViewToggle from '@/components/ui/ViewToggle'
+import EmptyState from '@/components/ui/EmptyState'
 import { useDashboardData } from './dashboard/hooks'
 import { MONTH_NAMES } from '@/lib/constants'
 import storage, { storageEvents } from '@/lib/storage'
@@ -58,12 +59,19 @@ export default function Home() {
   ]
 
   const now = new Date()
-  const { summary, trends, comparison, transactions, categories, isLoading } =
-    useDashboardData({
-      currentMonth,
-      currentYear,
-      baseCurrency,
-    })
+  const {
+    summary,
+    trends,
+    comparison,
+    transactions,
+    categories,
+    isLoading,
+    error,
+  } = useDashboardData({
+    currentMonth,
+    currentYear,
+    baseCurrency,
+  })
 
   useEffect(() => {
     const loadGoals = () => {
@@ -119,9 +127,16 @@ export default function Home() {
       </div>
 
       {isLoading ? (
-        <div className="flex items-center justify-center py-12">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-zinc-200 border-t-zinc-900 dark:border-zinc-800 dark:border-t-zinc-50" />
-        </div>
+        <EmptyState variant="loading" message="Loading dashboard..." />
+      ) : error ? (
+        <EmptyState
+          variant="error"
+          message="Failed to load dashboard data"
+          action={{
+            label: 'Retry',
+            onClick: () => window.location.reload(),
+          }}
+        />
       ) : (
         <>
           <div className="flex items-center justify-between">

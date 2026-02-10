@@ -3,6 +3,7 @@
 import type { BudgetProgress, CurrencyCode } from '@/lib/types'
 import { formatCurrency } from '@/lib/utils/format-utils'
 import CardContainer from '@/components/layout/CardContainer'
+import EmptyState from '@/components/ui/EmptyState'
 
 interface BudgetProgressProps {
   budgets: BudgetProgress[]
@@ -30,10 +31,7 @@ export default function BudgetProgress({
   return (
     <CardContainer title="Budget Progress">
       {budgets.length === 0 ? (
-        <p className="mt-4 text-sm text-zinc-600 dark:text-zinc-400">
-          No budgets set up yet. Add a budget to an expense category to track
-          your spending.
-        </p>
+        <EmptyState variant="empty" message="No budgets set up yet" />
       ) : (
         <div className="mt-4 space-y-4">
           {budgets.map((budget) => (

@@ -6,6 +6,7 @@ import { getProgressColor } from '@/lib/utils/savings-goal-utils'
 import { Target, AlertCircle, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import CardContainer from '@/components/layout/CardContainer'
+import EmptyState from '@/components/ui/EmptyState'
 
 interface SavingsGoalsSummaryProps {
   goals: SavingsGoal[]
@@ -38,16 +39,14 @@ export default function SavingsGoalsSummary({
       }
     >
       {activeGoals.length === 0 ? (
-        <p className="mt-4 text-sm text-zinc-600 dark:text-zinc-400">
-          No active savings goals.{' '}
-          <Link
-            href="/budgets?tab=savings"
-            className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
-          >
-            Create your first goal
-          </Link>{' '}
-          to start tracking progress.
-        </p>
+        <EmptyState
+          variant="empty"
+          message="No active savings goals"
+          action={{
+            label: 'Create Goal',
+            href: '/budgets?tab=savings',
+          }}
+        />
       ) : (
         <div className="mt-4 space-y-3">
           {displayGoals.map((goal) => (
