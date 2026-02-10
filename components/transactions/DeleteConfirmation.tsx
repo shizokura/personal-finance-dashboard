@@ -19,10 +19,7 @@ export default function DeleteConfirmation({
   transaction,
 }: DeleteConfirmationProps) {
   const formattedDate = formatDate(transaction.date)
-  const formattedAmount = formatCurrency(
-    transaction.amount,
-    transaction.currency
-  )
+  const formattedAmount = formatCurrency(transaction.amount, 'USD')
 
   return (
     <Modal

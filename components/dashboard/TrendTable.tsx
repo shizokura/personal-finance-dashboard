@@ -1,6 +1,6 @@
 'use client'
 
-import type { MonthlyTrend, TrendComparison, CurrencyCode } from '@/lib/types'
+import type { MonthlyTrend, TrendComparison } from '@/lib/types'
 import { formatCurrency } from '@/lib/utils/format-utils'
 import { ArrowUp, ArrowDown, Minus } from 'lucide-react'
 import CardContainer from '@/components/layout/CardContainer'
@@ -9,16 +9,15 @@ import EmptyState from '@/components/ui/EmptyState'
 interface TrendTableProps {
   title?: React.ReactNode
   trends: MonthlyTrend[]
-  currency: CurrencyCode
   comparison?: TrendComparison
 }
 
 export default function TrendTable({
   title = 'Monthly Trend',
   trends,
-  currency,
   comparison,
 }: TrendTableProps) {
+  const currency = 'USD' as const
   return (
     <CardContainer title={title}>
       {trends.length === 0 ? (
@@ -82,18 +81,13 @@ export default function TrendTable({
                   <ChangeCell
                     value={comparison.change.income}
                     percentage={comparison.change.incomePercentage}
-                    currency={currency}
                     isIncome
                   />
                   <ChangeCell
                     value={comparison.change.expenses}
                     percentage={comparison.change.expensesPercentage}
-                    currency={currency}
                   />
-                  <ChangeCell
-                    value={comparison.change.savings}
-                    currency={currency}
-                  />
+                  <ChangeCell value={comparison.change.savings} />
                   <ChangeCell
                     value={comparison.change.savingsRate}
                     isPercentage
@@ -111,16 +105,15 @@ export default function TrendTable({
 function ChangeCell({
   value,
   percentage,
-  currency,
   isIncome = false,
   isPercentage = false,
 }: {
   value: number
   percentage?: number
-  currency?: CurrencyCode
   isIncome?: boolean
   isPercentage?: boolean
 }) {
+  const currency = 'USD' as const
   const isPositive = value > 0
   const isZero = value === 0
 
@@ -153,7 +146,7 @@ function ChangeCell({
           <>
             <span>
               {value > 0 ? '+' : ''}
-              {formatCurrency(Math.abs(value), currency!)}
+              {formatCurrency(Math.abs(value), currency)}
             </span>
             {percentage && (
               <span className="text-xs">

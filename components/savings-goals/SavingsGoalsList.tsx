@@ -102,12 +102,12 @@ export default function SavingsGoalsList({
                 </h4>
                 <div className="mt-2 flex items-center gap-3 text-sm">
                   <span className="text-zinc-600 dark:text-zinc-400">
-                    {formatCurrency(goal.currentAmount, goal.currency)} of{' '}
-                    {formatCurrency(goal.targetAmount, goal.currency)}
+                    {formatCurrency(goal.currentAmount, 'USD')} of{' '}
+                    {formatCurrency(goal.targetAmount, 'USD')}
                   </span>
                   <span className="text-zinc-400">•</span>
                   <span className="text-zinc-600 dark:text-zinc-400">
-                    {formatCurrency(goal.remaining, goal.currency)} remaining
+                    {formatCurrency(goal.remaining, 'USD')} remaining
                   </span>
                 </div>
                 {goal.deadline && (

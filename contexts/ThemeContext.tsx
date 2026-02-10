@@ -1,6 +1,9 @@
 'use client'
 
+/* eslint-disable react-hooks/set-state-in-effect */
+
 import { createContext, useContext, useEffect, useState } from 'react'
+import storage, { storageEvents } from '@/lib/storage'
 
 type Theme = 'light' | 'dark' | 'system'
 
@@ -12,15 +15,33 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
-const THEME_KEY = 'pfd-theme'
+const OLD_THEME_KEY = 'pfd-theme'
+
+function migrateOldTheme() {
+  try {
+    const oldTheme = localStorage.getItem(OLD_THEME_KEY)
+    if (oldTheme && ['light', 'dark', 'system'].includes(oldTheme)) {
+      storage.saveSetting('theme', oldTheme as Theme)
+      localStorage.removeItem(OLD_THEME_KEY)
+    }
+  } catch (error) {
+    console.error('Failed to migrate theme:', error)
+  }
+}
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setThemeState] = useState<Theme>('system')
   const [actualTheme, setActualTheme] = useState<'light' | 'dark'>('light')
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    const stored = localStorage.getItem(THEME_KEY) as Theme
-    if (stored) setThemeState(stored)
+    migrateOldTheme()
+    const settings = storage.getSettings()
+    const storedTheme = settings.theme as Theme | undefined
+    if (storedTheme && ['light', 'dark', 'system'].includes(storedTheme)) {
+      setThemeState(storedTheme)
+    }
+    setMounted(true)
   }, [])
 
   useEffect(() => {
@@ -48,12 +69,23 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   const setTheme = (newTheme: Theme) => {
     setThemeState(newTheme)
-    localStorage.setItem(THEME_KEY, newTheme)
+    storage.saveSetting('theme', newTheme)
   }
+
+  useEffect(() => {
+    const unsubscribe = storageEvents.on('settings', () => {
+      const settings = storage.getSettings()
+      const storedTheme = settings.theme as Theme | undefined
+      if (storedTheme && ['light', 'dark', 'system'].includes(storedTheme)) {
+        setThemeState(storedTheme)
+      }
+    })
+    return () => unsubscribe?.()
+  }, [])
 
   return (
     <ThemeContext.Provider value={{ theme, setTheme, actualTheme }}>
-      {children}
+      {mounted ? children : null}
     </ThemeContext.Provider>
   )
 }

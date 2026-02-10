@@ -1,4 +1,12 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Personal Finance Dashboard
+
+A modern personal finance dashboard built with Next.js, React, TypeScript, and Tailwind CSS.
+
+## Documentation
+
+- **AGENTS.md** - Development guidelines, build commands, code style, and technical stack information
+- **prd/** - Product Requirements Documents for new features and architecture changes
+  - PRD-001: Single Currency & Insights (Current Sprint)
 
 ## Getting Started
 

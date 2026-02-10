@@ -1,10 +1,6 @@
 'use client'
 
-import type {
-  CategoryBreakdown,
-  SubcategoryBreakdown,
-  CurrencyCode,
-} from '@/lib/types'
+import type { CategoryBreakdown, SubcategoryBreakdown } from '@/lib/types'
 import { formatCurrency } from '@/lib/utils/format-utils'
 import CardContainer from '@/components/layout/CardContainer'
 import EmptyState from '@/components/ui/EmptyState'
@@ -12,16 +8,15 @@ import EmptyState from '@/components/ui/EmptyState'
 interface BreakdownListProps {
   title: string
   breakdown: CategoryBreakdown[] | SubcategoryBreakdown[]
-  currency: CurrencyCode
   showPercentage?: boolean
 }
 
 export default function BreakdownList({
   title,
   breakdown,
-  currency,
   showPercentage = true,
 }: BreakdownListProps) {
+  const currency = 'USD' as const
   const maxAmount = breakdown.length > 0 ? breakdown[0].amount : 0
 
   return (

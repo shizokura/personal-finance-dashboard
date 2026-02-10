@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
-import type { SavingsGoal, CurrencyCode } from '@/lib/types'
+import type { SavingsGoal } from '@/lib/types'
 import storage, { storageEvents } from '@/lib/storage'
 import BudgetManagement from '@/components/budgets/BudgetManagement'
 import SavingsGoalsList from '@/components/savings-goals/SavingsGoalsList'
@@ -17,7 +17,6 @@ export default function BudgetsPage() {
   const [activeTab, setActiveTab] = useState<'budgets' | 'savings'>(
     isValidTab ? tabParam : 'budgets'
   )
-  const [baseCurrency] = useState<CurrencyCode>('USD')
 
   const {
     data: savingsGoals,
@@ -96,9 +95,7 @@ export default function BudgetsPage() {
         />
       ) : (
         <>
-          {activeTab === 'budgets' && (
-            <BudgetManagement currency={baseCurrency} />
-          )}
+          {activeTab === 'budgets' && <BudgetManagement />}
 
           {activeTab === 'savings' && savingsGoals && (
             <SavingsGoalsList

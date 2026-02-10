@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import type { CurrencyCode, SavingsGoal } from '@/lib/types'
+import type { SavingsGoal } from '@/lib/types'
 import { formatCurrency } from '@/lib/utils/format-utils'
 import {
   goToNextMonth,
@@ -41,7 +41,6 @@ type TrendViewType = 'chart' | 'table'
 export default function Home() {
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth() + 1)
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear())
-  const [baseCurrency] = useState<CurrencyCode>('USD')
   const [trendView, setTrendView] = useState<TrendViewType>('chart')
   const [savingsGoals, setSavingsGoals] = useState<SavingsGoal[]>([])
 
@@ -70,7 +69,6 @@ export default function Home() {
   } = useDashboardData({
     currentMonth,
     currentYear,
-    baseCurrency,
   })
 
   useEffect(() => {
@@ -183,18 +181,14 @@ export default function Home() {
             <MetricCard
               label="Net Balance"
               value={
-                summary
-                  ? formatCurrency(summary.netSavings, baseCurrency)
-                  : '$0.00'
+                summary ? formatCurrency(summary.netSavings, 'USD') : '$0.00'
               }
               color={summary && summary.netSavings >= 0 ? 'green' : 'red'}
             />
             <MetricCard
               label="Monthly Income"
               value={
-                summary
-                  ? formatCurrency(summary.monthlyIncome, baseCurrency)
-                  : '$0.00'
+                summary ? formatCurrency(summary.monthlyIncome, 'USD') : '$0.00'
               }
               color="green"
               trend={
@@ -210,7 +204,7 @@ export default function Home() {
               label="Monthly Expenses"
               value={
                 summary
-                  ? formatCurrency(summary.monthlyExpenses, baseCurrency)
+                  ? formatCurrency(summary.monthlyExpenses, 'USD')
                   : '$0.00'
               }
               color="red"
@@ -242,21 +236,16 @@ export default function Home() {
             <ExpenseChart
               title="Expense Breakdown"
               breakdown={summary?.expenseBreakdown.byCategory || []}
-              currency={baseCurrency}
             />
             <BreakdownList
               title="Income Breakdown"
               breakdown={summary?.incomeBreakdown.byCategory || []}
-              currency={baseCurrency}
             />
           </div>
 
-          <BudgetProgress
-            budgets={summary?.budgetProgress || []}
-            currency={baseCurrency}
-          />
+          <BudgetProgress budgets={summary?.budgetProgress || []} />
 
-          <SavingsGoalsSummary goals={savingsGoals} currency={baseCurrency} />
+          <SavingsGoalsSummary goals={savingsGoals} />
 
           {trendView === 'chart' ? (
             <MonthlyTrendChart
@@ -271,7 +260,6 @@ export default function Home() {
                 </div>
               }
               trends={trends}
-              currency={baseCurrency}
             />
           ) : (
             <TrendTable
@@ -286,7 +274,6 @@ export default function Home() {
                 </div>
               }
               trends={trends}
-              currency={baseCurrency}
               comparison={comparison || undefined}
             />
           )}

@@ -1,10 +1,10 @@
-import type { Transaction, Category, CurrencyCode } from '@/lib/types'
+import type { Transaction, Category } from '@/lib/types'
 import type { MonthlySummary, MonthlyTransactionStats } from '@/lib/types'
 import {
   getMonthDateRange,
   filterTransactionsByPeriod,
   filterTransactionsByStatus,
-  filterTransactionsByTypeAndCurrency,
+  filterTransactionsByTypes,
   sumByType,
 } from './filter-helpers'
 import {
@@ -19,13 +19,10 @@ function calculateSavingsRate(income: number, expenses: number): number {
   return ((income - expenses) / income) * 100
 }
 
-function calculateTotalBalance(
-  transactions: Transaction[],
-  baseCurrency: CurrencyCode
-): number {
+function calculateTotalBalance(transactions: Transaction[]): number {
   const validTypes = ['income', 'expense', 'refund']
   const completedTransactions = transactions.filter(
-    (t) => t.status === 'completed' && t.currency === baseCurrency
+    (t) => t.status === 'completed'
   )
 
   return completedTransactions.reduce((balance, t) => {
@@ -86,8 +83,7 @@ export function calculateMonthlySummary(
   month: number,
   year: number,
   transactions: Transaction[],
-  categories: Category[],
-  baseCurrency: CurrencyCode = 'USD'
+  categories: Category[]
 ): MonthlySummary {
   const period = getMonthDateRange(month, year)
   const { start: startDate, end: endDate } = period
@@ -97,10 +93,11 @@ export function calculateMonthlySummary(
     monthlyTransactions,
     'completed'
   )
-  const validTransactions = filterTransactionsByTypeAndCurrency(
-    completedTransactions,
-    baseCurrency
-  )
+  const validTransactions = filterTransactionsByTypes(completedTransactions, [
+    'income',
+    'expense',
+    'refund',
+  ])
 
   const incomeTransactions = validTransactions.filter(
     (t) => t.type === 'income'
@@ -118,7 +115,7 @@ export function calculateMonthlySummary(
   const monthlyExpenses = sumByType(expenseTransactions, 'expense')
   const netSavings = monthlyIncome - monthlyExpenses
   const savingsRate = calculateSavingsRate(monthlyIncome, monthlyExpenses)
-  const totalBalance = calculateTotalBalance(transactions, baseCurrency)
+  const totalBalance = calculateTotalBalance(transactions)
 
   const expenseBreakdown = {
     total: monthlyExpenses,
@@ -164,8 +161,7 @@ export function calculateMonthlySummary(
   const budgetProgress = calculateBudgetProgress(
     transactions,
     categories,
-    period,
-    baseCurrency
+    period
   )
 
   return {

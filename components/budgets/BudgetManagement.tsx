@@ -1,6 +1,5 @@
 'use client'
 
-import type { CurrencyCode } from '@/lib/types'
 import { formatCurrency } from '@/lib/utils/format-utils'
 import { useState, useEffect } from 'react'
 import * as Icons from 'lucide-react'
@@ -14,11 +13,8 @@ interface IconProps {
   style?: React.CSSProperties
 }
 
-interface BudgetManagementProps {
-  currency: CurrencyCode
-}
-
-export default function BudgetManagement({ currency }: BudgetManagementProps) {
+export default function BudgetManagement() {
+  const currency = 'USD' as const
   const [budgets, setBudgets] = useState<Record<string, string>>({})
   const [isSaving, setIsSaving] = useState(false)
 

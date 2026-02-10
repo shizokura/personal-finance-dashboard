@@ -1,7 +1,7 @@
 import { STORAGE_KEYS } from './keys'
 import type { SavingsGoal } from '@/lib/types'
 
-export const CURRENT_SCHEMA_VERSION = 3
+export const CURRENT_SCHEMA_VERSION = 4
 
 export type SchemaVersion = number
 
@@ -54,6 +54,10 @@ export function migrate(): void {
 
   if (currentVersion < 3) {
     migrateToV3()
+  }
+
+  if (currentVersion < 4) {
+    migrateToV4()
   }
 
   updateSchemaVersion(CURRENT_SCHEMA_VERSION)
@@ -152,5 +156,37 @@ function migrateToV3(): void {
   } catch (error) {
     console.error('Migration to v3 failed:', error)
     localStorage.setItem(STORAGE_KEYS.SAVINGS_GOALS, JSON.stringify([]))
+  }
+}
+
+function migrateToV4(): void {
+  console.log('Running migration to v4')
+
+  try {
+    const OLD_THEME_KEY = 'pfd-theme'
+    const oldTheme = localStorage.getItem(OLD_THEME_KEY)
+
+    if (oldTheme && ['light', 'dark', 'system'].includes(oldTheme)) {
+      const settings = localStorage.getItem(STORAGE_KEYS.SETTINGS)
+      let settingsObj: Record<string, unknown> = {}
+
+      if (settings) {
+        try {
+          settingsObj = JSON.parse(settings)
+        } catch (parseError) {
+          console.error(
+            'Failed to parse settings during v4 migration:',
+            parseError
+          )
+          settingsObj = {}
+        }
+      }
+
+      settingsObj.theme = oldTheme
+      localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settingsObj))
+      localStorage.removeItem(OLD_THEME_KEY)
+    }
+  } catch (error) {
+    console.error('Migration to v4 failed:', error)
   }
 }

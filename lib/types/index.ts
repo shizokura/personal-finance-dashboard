@@ -46,4 +46,6 @@ export type {
   DashboardMetrics,
   ChartDataPoint,
   SavingsGoal,
+  PeriodType,
+  UserSettings,
 } from './summary'

@@ -1,19 +1,18 @@
 'use client'
 
-import type { CategoryBreakdown, CurrencyCode } from '@/lib/types'
+import type { CategoryBreakdown } from '@/lib/types'
 import { formatCurrency } from '@/lib/utils/format-utils'
 
 interface ExpenseListViewProps {
   breakdown: CategoryBreakdown[]
-  currency: CurrencyCode
   showPercentage?: boolean
 }
 
 export default function ExpenseListView({
   breakdown,
-  currency,
   showPercentage = true,
 }: ExpenseListViewProps) {
+  const currency = 'USD' as const
   const maxAmount = breakdown.length > 0 ? breakdown[0].amount : 0
 
   return (

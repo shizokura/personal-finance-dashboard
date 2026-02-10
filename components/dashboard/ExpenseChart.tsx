@@ -14,11 +14,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts'
-import type {
-  CategoryBreakdown,
-  CurrencyCode,
-  ChartViewType,
-} from '@/lib/types'
+import type { CategoryBreakdown, ChartViewType } from '@/lib/types'
 import { formatCurrency } from '@/lib/utils/format-utils'
 import CardContainer from '@/components/layout/CardContainer'
 import { PieChart as PieChartIcon, BarChart3, List } from 'lucide-react'
@@ -30,15 +26,10 @@ interface CustomTooltipProps {
   active?: boolean
   payload?: Array<{ name: string; value: number }>
   breakdown: CategoryBreakdown[]
-  currency: CurrencyCode
 }
 
-function CustomTooltip({
-  active,
-  payload,
-  breakdown,
-  currency,
-}: CustomTooltipProps) {
+function CustomTooltip({ active, payload, breakdown }: CustomTooltipProps) {
+  const currency = 'USD' as const
   const payloadArray = payload as
     | Array<{ name: string; value: number }>
     | undefined
@@ -70,14 +61,10 @@ function CustomTooltip({
 interface ExpenseChartProps {
   title: string
   breakdown: CategoryBreakdown[]
-  currency: CurrencyCode
 }
 
-export default function ExpenseChart({
-  title,
-  breakdown,
-  currency,
-}: ExpenseChartProps) {
+export default function ExpenseChart({ title, breakdown }: ExpenseChartProps) {
+  const currency = 'USD' as const
   const [viewType, setViewType] = useState<ChartViewType>('pie')
 
   const viewOptions = useMemo(
@@ -137,7 +124,7 @@ export default function ExpenseChart({
               .join(', ')}
           </p>
           {viewType === 'list' ? (
-            <ExpenseListView breakdown={breakdown} currency={currency} />
+            <ExpenseListView breakdown={breakdown} />
           ) : viewType === 'pie' ? (
             <div
               role="img"
@@ -162,14 +149,7 @@ export default function ExpenseChart({
                       <Cell key={`cell-${index}`} fill={entry.fill} />
                     ))}
                   </Pie>
-                  <Tooltip
-                    content={
-                      <CustomTooltip
-                        breakdown={breakdown}
-                        currency={currency}
-                      />
-                    }
-                  />
+                  <Tooltip content={<CustomTooltip breakdown={breakdown} />} />
                   <Legend />
                 </PieChart>
               </ResponsiveContainer>
@@ -195,14 +175,7 @@ export default function ExpenseChart({
                     className="text-sm"
                     tick={{ fontSize: 12, fill: '#71717a' }}
                   />
-                  <Tooltip
-                    content={
-                      <CustomTooltip
-                        breakdown={breakdown}
-                        currency={currency}
-                      />
-                    }
-                  />
+                  <Tooltip content={<CustomTooltip breakdown={breakdown} />} />
                   <Legend />
                   <Bar
                     dataKey="value"

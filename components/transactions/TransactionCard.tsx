@@ -43,10 +43,7 @@ export default function TransactionCard({
     IconComponent || (Icons.Circle as React.ComponentType<IconProps>)
 
   const formattedDate = formatDate(transaction.date)
-  const formattedAmount = formatCurrency(
-    transaction.amount,
-    transaction.currency
-  )
+  const formattedAmount = formatCurrency(transaction.amount, 'USD')
 
   return (
     <div className="group relative rounded-lg border border-zinc-200 bg-white p-4 shadow-sm transition-all hover:shadow-md dark:border-zinc-700 dark:bg-zinc-900">
@@ -98,9 +95,7 @@ export default function TransactionCard({
               {isIncome ? '+' : '-'}
               {formattedAmount}
             </p>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400">
-              {transaction.currency}
-            </p>
+            <p className="text-xs text-zinc-500 dark:text-zinc-400">USD</p>
           </div>
         </div>
 

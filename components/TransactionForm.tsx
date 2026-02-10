@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import type { CurrencyCode, TransactionType, Transaction } from '@/lib/types'
-import { SUPPORTED_CURRENCIES } from '@/lib/types'
+import type { TransactionType, Transaction } from '@/lib/types'
+import { SUPPORTED_CURRENCIES } from '@/lib/types/common'
 import { getDefaultCategories } from '@/lib/seed-data'
 import storage from '@/lib/storage'
 import type { Category, Metadata } from '@/lib/types'
@@ -30,9 +30,6 @@ export default function TransactionForm({
     transaction?.type ?? 'income'
   )
   const [amount, setAmount] = useState(transaction?.amount.toString() ?? '')
-  const [currency, setCurrency] = useState<CurrencyCode>(
-    transaction?.currency ?? 'USD'
-  )
   const [date, setDate] = useState(
     transaction?.date.toISOString().split('T')[0] ??
       new Date().toISOString().split('T')[0]
@@ -99,7 +96,6 @@ export default function TransactionForm({
           ...transaction,
           type: transactionType,
           amount: parseFloat(amount),
-          currency,
           date: transactionDate,
           description: description.trim(),
           categoryId,
@@ -115,7 +111,6 @@ export default function TransactionForm({
           type: transactionType,
           status: 'completed',
           amount: parseFloat(amount),
-          currency,
           date: transactionDate,
           description: description.trim(),
           categoryId,
@@ -232,7 +227,7 @@ export default function TransactionForm({
             />
             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
               <span className="text-sm text-zinc-500 dark:text-zinc-400">
-                {SUPPORTED_CURRENCIES[currency].symbol}
+                {SUPPORTED_CURRENCIES.USD.symbol}
               </span>
             </div>
           </div>
@@ -244,29 +239,6 @@ export default function TransactionForm({
               {errors.amount}
             </p>
           )}
-        </div>
-
-        <div>
-          <label
-            htmlFor="currency"
-            className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
-          >
-            Currency
-          </label>
-          <select
-            id="currency"
-            value={currency}
-            onChange={(e) => setCurrency(e.target.value as CurrencyCode)}
-            className="mt-2 block w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm shadow-sm focus:border-zinc-500 focus:ring-zinc-500 dark:border-zinc-600 dark:bg-zinc-800 dark:focus:border-zinc-500"
-          >
-            {Object.entries(SUPPORTED_CURRENCIES).map(
-              ([code, { name, symbol }]) => (
-                <option key={code} value={code}>
-                  {code} - {name} ({symbol})
-                </option>
-              )
-            )}
-          </select>
         </div>
       </div>
 

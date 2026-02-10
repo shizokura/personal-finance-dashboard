@@ -1,12 +1,11 @@
-import type { Transaction, Category, CurrencyCode } from '@/lib/types'
+import type { Transaction, Category } from '@/lib/types'
 import type { MonthlyTrend, TrendComparison } from '@/lib/types'
 import { calculateMonthlySummary } from './monthly-summary'
 
 export function calculateMonthlyTrends(
   transactions: Transaction[],
   categories: Category[],
-  months: number = 6,
-  baseCurrency: CurrencyCode = 'USD'
+  months: number = 6
 ): MonthlyTrend[] {
   const currentDate = new Date()
   const trends: MonthlyTrend[] = []
@@ -24,8 +23,7 @@ export function calculateMonthlyTrends(
       month,
       year,
       transactions,
-      categories,
-      baseCurrency
+      categories
     )
 
     const periodLabel = new Intl.DateTimeFormat('en-US', {

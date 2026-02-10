@@ -1,4 +1,4 @@
-import type { Transaction, SavingsGoal, CurrencyCode } from '@/lib/types'
+import type { Transaction, SavingsGoal } from '@/lib/types'
 
 export function calculateSavingsGoalProgress(goal: SavingsGoal): SavingsGoal {
   const { targetAmount, currentAmount, deadline } = goal
@@ -46,13 +46,6 @@ export function getCompletedGoals(goals: SavingsGoal[]): SavingsGoal[] {
 
 export function getOverdueGoals(goals: SavingsGoal[]): SavingsGoal[] {
   return goals.filter((g) => g.status === 'overdue')
-}
-
-export function getGoalsByCurrency(
-  goals: SavingsGoal[],
-  currency: CurrencyCode
-): SavingsGoal[] {
-  return goals.filter((g) => g.currency === currency)
 }
 
 export function sortGoalsByPriority(goals: SavingsGoal[]): SavingsGoal[] {

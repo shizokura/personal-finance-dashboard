@@ -11,7 +11,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts'
-import type { MonthlyTrend, CurrencyCode } from '@/lib/types'
+import type { MonthlyTrend } from '@/lib/types'
 import { formatCurrency } from '@/lib/utils/format-utils'
 import { TREND_COLORS, GRID_STROKE, AXIS_TICK_COLOR } from '@/lib/constants'
 import CardContainer from '@/components/layout/CardContainer'
@@ -31,15 +31,10 @@ interface CustomTooltipProps {
   active?: boolean
   payload?: Array<{ name: string; value: number }>
   label?: string
-  currency: CurrencyCode
 }
 
-function CustomTooltip({
-  active,
-  payload,
-  label,
-  currency,
-}: CustomTooltipProps) {
+function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
+  const currency = 'USD' as const
   const payloadArray = payload as
     | Array<{ name: string; value: number }>
     | undefined
@@ -66,14 +61,13 @@ function CustomTooltip({
 interface MonthlyTrendChartProps {
   title?: React.ReactNode
   trends: MonthlyTrend[]
-  currency: CurrencyCode
 }
 
 export default function MonthlyTrendChart({
   title,
   trends,
-  currency,
 }: MonthlyTrendChartProps) {
+  const currency = 'USD' as const
   const colors = useThemeAwareColors()
 
   const chartData = useMemo(() => {
@@ -120,7 +114,7 @@ export default function MonthlyTrendChart({
                   className="text-sm"
                   tick={{ fontSize: 12, fill: colors.tick }}
                 />
-                <Tooltip content={<CustomTooltip currency={currency} />} />
+                <Tooltip content={<CustomTooltip />} />
                 <Legend />
                 <Line
                   type="monotone"

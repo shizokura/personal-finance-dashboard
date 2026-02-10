@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import type { MonthlySummary, MonthlyTrend, TrendComparison } from '@/lib/types'
-import type { Transaction, Category, CurrencyCode } from '@/lib/types'
+import type { Transaction, Category } from '@/lib/types'
 import {
   calculateMonthlySummary,
   calculateMonthlyTrends,
@@ -14,7 +14,6 @@ import { TREND_MONTHS } from '@/lib/constants'
 interface UseDashboardDataParams {
   currentMonth: number
   currentYear: number
-  baseCurrency: CurrencyCode
 }
 
 interface UseDashboardDataReturn {
@@ -30,7 +29,6 @@ interface UseDashboardDataReturn {
 export function useDashboardData({
   currentMonth,
   currentYear,
-  baseCurrency,
 }: UseDashboardDataParams): UseDashboardDataReturn {
   const [summary, setSummary] = useState<MonthlySummary | null>(null)
   const [trends, setTrends] = useState<MonthlyTrend[]>([])
@@ -55,17 +53,11 @@ export function useDashboardData({
           currentMonth,
           currentYear,
           txns,
-          cats,
-          baseCurrency
+          cats
         )
         setSummary(monthSummary)
 
-        const monthTrends = calculateMonthlyTrends(
-          txns,
-          cats,
-          TREND_MONTHS,
-          baseCurrency
-        )
+        const monthTrends = calculateMonthlyTrends(txns, cats, TREND_MONTHS)
         setTrends(monthTrends)
 
         if (monthTrends.length >= 2) {
@@ -96,7 +88,7 @@ export function useDashboardData({
       unsubscribe?.()
       unsubscribe2?.()
     }
-  }, [currentMonth, currentYear, baseCurrency])
+  }, [currentMonth, currentYear])
 
   return {
     summary,

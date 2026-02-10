@@ -1,19 +1,16 @@
 'use client'
 
-import type { BudgetProgress, CurrencyCode } from '@/lib/types'
+import type { BudgetProgress } from '@/lib/types'
 import { formatCurrency } from '@/lib/utils/format-utils'
 import CardContainer from '@/components/layout/CardContainer'
 import EmptyState from '@/components/ui/EmptyState'
 
 interface BudgetProgressProps {
   budgets: BudgetProgress[]
-  currency: CurrencyCode
 }
 
-export default function BudgetProgress({
-  budgets,
-  currency,
-}: BudgetProgressProps) {
+export default function BudgetProgress({ budgets }: BudgetProgressProps) {
+  const currency = 'USD' as const
   const statusColors = {
     onTrack:
       'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',

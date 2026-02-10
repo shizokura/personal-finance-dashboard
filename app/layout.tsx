@@ -5,6 +5,7 @@ import Header from '@/components/Header'
 import DevTools from '@/components/DevTools'
 import ScrollToTop from '@/components/ScrollToTop'
 import SkipLink from '@/components/SkipLink'
+import CurrencySetup from '@/components/CurrencySetup'
 import { ThemeProvider } from '@/contexts/ThemeContext'
 
 const geistSans = Geist({
@@ -36,6 +37,7 @@ export default function RootLayout({
           <SkipLink />
           <Header />
           <ScrollToTop />
+          <CurrencySetup />
           <div
             id="main-content"
             className="mx-auto min-h-screen max-w-7xl px-4 py-8 sm:px-6 lg:px-8"

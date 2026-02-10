@@ -5,7 +5,6 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Menu, X, Plus } from 'lucide-react'
 import { useEscapeKey } from '@/lib/accessibility'
-import ThemeToggle from '@/components/ThemeToggle'
 
 export default function Header() {
   const pathname = usePathname()
@@ -73,7 +72,6 @@ export default function Header() {
           >
             Settings
           </Link>
-          <ThemeToggle />
         </nav>
 
         <div className="flex items-center space-x-4">

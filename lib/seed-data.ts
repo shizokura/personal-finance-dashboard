@@ -327,7 +327,6 @@ export function generateDummyTransactions(
     const isIncome = type === 'income'
     const category = getRandomCategory(isIncome ? 'income' : 'expense')
     const date = getRandomDate(24)
-    const currency = getRandomCurrency()
     const tags = getRandomTags()
     const dummyTag = '__dummy__'
 
@@ -341,7 +340,6 @@ export function generateDummyTransactions(
         type,
         status: getRandomStatus(),
         amount: getRandomAmount(1, 10000),
-        currency,
         date,
         description: getRandomDescription(type, category),
         categoryId: category.id,

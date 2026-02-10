@@ -1,14 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import type { SavingsGoal, CurrencyCode } from '@/lib/types'
+import type { SavingsGoal } from '@/lib/types'
 import { SUPPORTED_CURRENCIES } from '@/lib/types/common'
 import storage from '@/lib/storage'
 import { calculateSavingsGoalProgress } from '@/lib/calculations'
-
-function isValidCurrencyCode(code: string): code is CurrencyCode {
-  return code in SUPPORTED_CURRENCIES
-}
 
 interface SavingsGoalFormProps {
   goal?: SavingsGoal
@@ -25,7 +21,6 @@ export default function SavingsGoalForm({
     name: goal?.name || '',
     targetAmount: goal?.targetAmount?.toString() || '',
     currentAmount: goal?.currentAmount?.toString() || '0',
-    currency: goal?.currency || ('USD' as CurrencyCode),
     deadline: goal?.deadline ? goal.deadline.toISOString().split('T')[0] : '',
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -81,7 +76,6 @@ export default function SavingsGoalForm({
           name: formData.name.trim(),
           targetAmount,
           currentAmount,
-          currency: formData.currency,
           deadline,
           updatedAt: now,
         }
@@ -95,7 +89,6 @@ export default function SavingsGoalForm({
           name: formData.name.trim(),
           targetAmount,
           currentAmount,
-          currency: formData.currency,
           percentage: 0,
           remaining: targetAmount - currentAmount,
           status: 'notStarted',
@@ -158,23 +151,9 @@ export default function SavingsGoalForm({
           Target Amount
         </label>
         <div className="relative mt-2">
-          <select
-            value={formData.currency}
-            onChange={(e) => {
-              const value = e.target.value
-              setFormData({
-                ...formData,
-                currency: isValidCurrencyCode(value) ? value : 'USD',
-              })
-            }}
-            className="absolute left-3 top-1/2 -translate-y-1/2 rounded border border-zinc-300 bg-zinc-50 px-2 py-0.5 text-sm font-medium text-zinc-700 focus:outline-none dark:border-zinc-600 dark:bg-zinc-700 dark:text-zinc-300"
-          >
-            {Object.entries(SUPPORTED_CURRENCIES).map(([code, currency]) => (
-              <option key={code} value={code}>
-                {currency.symbol}
-              </option>
-            ))}
-          </select>
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 rounded border border-zinc-300 bg-zinc-50 px-2 py-0.5 text-sm font-medium text-zinc-700 focus:outline-none dark:border-zinc-600 dark:bg-zinc-700 dark:text-zinc-300">
+            {SUPPORTED_CURRENCIES.USD.symbol}
+          </span>
           <input
             id="targetAmount"
             type="number"

@@ -1,4 +1,4 @@
-import type { Attachment, CurrencyCode, Metadata } from './common'
+import type { Attachment, Metadata } from './common'
 
 export type TransactionType =
   | 'income'
@@ -22,7 +22,6 @@ export interface Transaction {
   type: TransactionType
   status: TransactionStatus
   amount: number
-  currency: CurrencyCode
   date: Date
   description: string
   categoryId: string
@@ -48,7 +47,6 @@ export interface RecurringTransaction extends Omit<Transaction, 'type'> {
 export interface TransactionFormData {
   type: TransactionType
   amount: number
-  currency: CurrencyCode
   date: Date
   description: string
   categoryId: string

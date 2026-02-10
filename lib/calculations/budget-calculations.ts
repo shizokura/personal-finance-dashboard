@@ -1,9 +1,4 @@
-import type {
-  Transaction,
-  Category,
-  CurrencyCode,
-  DateRange,
-} from '@/lib/types'
+import type { Transaction, Category, DateRange } from '@/lib/types'
 import type { BudgetProgress } from '@/lib/types'
 import { filterTransactionsByPeriod } from './filter-helpers'
 import {
@@ -14,12 +9,11 @@ import {
 export function calculateBudgetProgress(
   transactions: Transaction[],
   categories: Category[],
-  range: DateRange,
-  baseCurrency: CurrencyCode
+  range: DateRange
 ): BudgetProgress[] {
   const monthlyTransactions = filterTransactionsByPeriod(transactions, range)
-  const filteredByCurrencyAndType = monthlyTransactions.filter(
-    (t) => t.currency === baseCurrency && t.type === 'expense'
+  const expenseTransactions = monthlyTransactions.filter(
+    (t) => t.type === 'expense'
   )
 
   const budgetCategories = categories.filter(
@@ -29,7 +23,7 @@ export function calculateBudgetProgress(
   const progress: BudgetProgress[] = []
 
   budgetCategories.forEach((category) => {
-    const spent = filteredByCurrencyAndType
+    const spent = expenseTransactions
       .filter((t) => t.categoryId === category.id)
       .reduce((sum, t) => sum + t.amount, 0)
 

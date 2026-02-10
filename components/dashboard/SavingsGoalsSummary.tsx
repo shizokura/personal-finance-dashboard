@@ -1,6 +1,6 @@
 'use client'
 
-import type { SavingsGoal, CurrencyCode } from '@/lib/types'
+import type { SavingsGoal } from '@/lib/types'
 import { formatCurrency } from '@/lib/utils/format-utils'
 import { getProgressColor } from '@/lib/utils/savings-goal-utils'
 import { Target, AlertCircle, ArrowRight } from 'lucide-react'
@@ -10,13 +10,12 @@ import EmptyState from '@/components/ui/EmptyState'
 
 interface SavingsGoalsSummaryProps {
   goals: SavingsGoal[]
-  currency: CurrencyCode
 }
 
 export default function SavingsGoalsSummary({
   goals,
-  currency,
 }: SavingsGoalsSummaryProps) {
+  const currency = 'USD' as const
   const activeGoals = goals.filter((g) => g.status !== 'completed')
   const overdueGoals = activeGoals.filter((g) => g.status === 'overdue')
   const displayGoals = activeGoals.slice(0, 3)

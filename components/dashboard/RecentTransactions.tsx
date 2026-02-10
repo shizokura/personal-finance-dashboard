@@ -108,7 +108,7 @@ export default function RecentTransactions({
                   }`}
                 >
                   {isIncome ? '+' : '-'}
-                  {formatCurrency(transaction.amount, transaction.currency)}
+                  {formatCurrency(transaction.amount, 'USD')}
                 </p>
               </div>
             </div>
