@@ -89,7 +89,7 @@ export default function RecentTransactions({
                   style={{ color: category?.color || '#6b7280' }}
                 />
               </div>
-              <div className="flex min-w-0 flex-1">
+              <div className="flex min-w-0 flex-1 items-center gap-2">
                 <p className="truncate font-medium text-zinc-900 dark:text-zinc-50">
                   {transaction.description}
                 </p>
