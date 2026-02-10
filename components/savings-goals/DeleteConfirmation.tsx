@@ -17,7 +17,12 @@ export default function DeleteConfirmation({
   goal,
 }: DeleteConfirmationProps) {
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Delete Savings Goal">
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Delete Savings Goal"
+      role="alertdialog"
+    >
       <div className="space-y-4">
         <div className="rounded-lg bg-red-50 p-4 dark:bg-red-900/20">
           <p className="text-sm text-red-800 dark:text-red-300">
@@ -30,6 +35,7 @@ export default function DeleteConfirmation({
           <button
             type="button"
             onClick={onClose}
+            aria-label="Cancel deletion"
             className="rounded-lg border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 dark:border-zinc-600 dark:text-zinc-300 dark:hover:bg-zinc-800"
           >
             Cancel
@@ -37,6 +43,7 @@ export default function DeleteConfirmation({
           <button
             type="button"
             onClick={onConfirm}
+            aria-label="Confirm deletion"
             className="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-700"
           >
             Delete Goal

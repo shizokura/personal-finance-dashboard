@@ -36,6 +36,7 @@ export default function Pagination({
           type="button"
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 1}
+          aria-label="Go to previous page"
           className="inline-flex items-center gap-1 rounded-lg border border-zinc-300 px-3 py-1.5 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 disabled:opacity-50 disabled:hover:bg-transparent dark:border-zinc-600 dark:text-zinc-300 dark:hover:bg-zinc-800 disabled:dark:hover:bg-transparent"
         >
           <ChevronLeft className="h-4 w-4" />
@@ -48,6 +49,8 @@ export default function Pagination({
               key={index}
               type="button"
               onClick={() => handlePageChange(page)}
+              aria-label={`Go to page ${page}`}
+              aria-current={page === currentPage ? 'page' : undefined}
               className={`min-w-[2.25rem] rounded-lg px-2.5 py-1.5 text-sm font-medium transition-colors ${
                 page === currentPage
                   ? 'bg-green-600 text-white hover:bg-green-700'
@@ -70,6 +73,7 @@ export default function Pagination({
           type="button"
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
+          aria-label="Go to next page"
           className="inline-flex items-center gap-1 rounded-lg border border-zinc-300 px-3 py-1.5 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 disabled:opacity-50 disabled:hover:bg-transparent dark:border-zinc-600 dark:text-zinc-300 dark:hover:bg-zinc-800 disabled:dark:hover:bg-transparent"
         >
           Next

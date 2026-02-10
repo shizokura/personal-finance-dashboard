@@ -128,64 +128,94 @@ export default function ExpenseChart({
         <EmptyState message="No expense data available for this period." />
       ) : (
         <div className="mt-4">
+          <p id="expense-chart-desc" className="sr-only">
+            {breakdown
+              .map(
+                (item) =>
+                  `${item.categoryName}: ${formatCurrency(item.amount, currency)} (${item.percentage?.toFixed(1)}%)`
+              )
+              .join(', ')}
+          </p>
           {viewType === 'list' ? (
             <ExpenseListView breakdown={breakdown} currency={currency} />
           ) : viewType === 'pie' ? (
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={chartData}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  label={({ name, percent }) =>
-                    `${name}: ${percent != null ? (percent * 100).toFixed(0) : 0}%`
-                  }
-                  outerRadius={80}
-                  fill="#8884d8"
-                  dataKey="value"
-                >
-                  {chartData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.fill} />
-                  ))}
-                </Pie>
-                <Tooltip
-                  content={
-                    <CustomTooltip breakdown={breakdown} currency={currency} />
-                  }
-                />
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
+            <div
+              role="img"
+              aria-label={`Expense breakdown chart showing ${breakdown.length} categories`}
+              aria-describedby="expense-chart-desc"
+            >
+              <ResponsiveContainer width="100%" height={300}>
+                <PieChart>
+                  <Pie
+                    data={chartData}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    label={({ name, percent }) =>
+                      `${name}: ${percent != null ? (percent * 100).toFixed(0) : 0}%`
+                    }
+                    outerRadius={80}
+                    fill="#8884d8"
+                    dataKey="value"
+                  >
+                    {chartData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.fill} />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    content={
+                      <CustomTooltip
+                        breakdown={breakdown}
+                        currency={currency}
+                      />
+                    }
+                  />
+                  <Legend />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
           ) : (
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={chartData}>
-                <CartesianGrid
-                  strokeDasharray="3 3"
-                  className="stroke-zinc-200 dark:stroke-zinc-700"
-                />
-                <XAxis
-                  dataKey="name"
-                  className="text-sm"
-                  tick={{ fontSize: 12, fill: '#71717a' }}
-                />
-                <YAxis
-                  className="text-sm"
-                  tick={{ fontSize: 12, fill: '#71717a' }}
-                />
-                <Tooltip
-                  content={
-                    <CustomTooltip breakdown={breakdown} currency={currency} />
-                  }
-                />
-                <Legend />
-                <Bar dataKey="value" fill="currentColor" radius={[4, 4, 0, 0]}>
-                  {chartData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.fill} />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
+            <div
+              role="img"
+              aria-label={`Expense breakdown chart showing ${breakdown.length} categories`}
+              aria-describedby="expense-chart-desc"
+            >
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={chartData}>
+                  <CartesianGrid
+                    strokeDasharray="3 3"
+                    className="stroke-zinc-200 dark:stroke-zinc-700"
+                  />
+                  <XAxis
+                    dataKey="name"
+                    className="text-sm"
+                    tick={{ fontSize: 12, fill: '#71717a' }}
+                  />
+                  <YAxis
+                    className="text-sm"
+                    tick={{ fontSize: 12, fill: '#71717a' }}
+                  />
+                  <Tooltip
+                    content={
+                      <CustomTooltip
+                        breakdown={breakdown}
+                        currency={currency}
+                      />
+                    }
+                  />
+                  <Legend />
+                  <Bar
+                    dataKey="value"
+                    fill="currentColor"
+                    radius={[4, 4, 0, 0]}
+                  >
+                    {chartData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.fill} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
           )}
         </div>
       )}

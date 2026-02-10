@@ -130,6 +130,8 @@ export default function SavingsGoalForm({
           id="name"
           type="text"
           value={formData.name}
+          aria-describedby={errors.name ? 'name-error' : undefined}
+          aria-invalid={!!errors.name}
           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
           className={`mt-2 block w-full rounded-lg border px-3 py-2 text-sm shadow-sm dark:bg-zinc-800 ${
             errors.name
@@ -139,7 +141,10 @@ export default function SavingsGoalForm({
           placeholder="e.g., Emergency Fund, Vacation"
         />
         {errors.name && (
-          <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+          <p
+            id="name-error"
+            className="mt-1 text-sm text-red-600 dark:text-red-400"
+          >
             {errors.name}
           </p>
         )}
@@ -176,6 +181,10 @@ export default function SavingsGoalForm({
             step="0.01"
             min="0"
             value={formData.targetAmount}
+            aria-describedby={
+              errors.targetAmount ? 'target-amount-error' : undefined
+            }
+            aria-invalid={!!errors.targetAmount}
             onChange={(e) =>
               setFormData({ ...formData, targetAmount: e.target.value })
             }
@@ -188,7 +197,10 @@ export default function SavingsGoalForm({
           />
         </div>
         {errors.targetAmount && (
-          <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+          <p
+            id="target-amount-error"
+            className="mt-1 text-sm text-red-600 dark:text-red-400"
+          >
             {errors.targetAmount}
           </p>
         )}
@@ -210,6 +222,10 @@ export default function SavingsGoalForm({
           step="0.01"
           min="0"
           value={formData.currentAmount}
+          aria-describedby={
+            errors.currentAmount ? 'current-amount-error' : undefined
+          }
+          aria-invalid={!!errors.currentAmount}
           onChange={(e) =>
             setFormData({ ...formData, currentAmount: e.target.value })
           }
@@ -221,7 +237,10 @@ export default function SavingsGoalForm({
           placeholder="0.00"
         />
         {errors.currentAmount && (
-          <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+          <p
+            id="current-amount-error"
+            className="mt-1 text-sm text-red-600 dark:text-red-400"
+          >
             {errors.currentAmount}
           </p>
         )}

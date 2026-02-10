@@ -158,7 +158,10 @@ export default function TransactionForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {successMessage && (
-        <div className="rounded-lg bg-green-50 p-4 dark:bg-green-900/20">
+        <div
+          role="status"
+          className="rounded-lg bg-green-50 p-4 dark:bg-green-900/20"
+        >
           <div className="flex items-center gap-2">
             <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" />
             <p className="text-sm font-medium text-green-900 dark:text-green-100">
@@ -217,6 +220,8 @@ export default function TransactionForm({
               step="0.01"
               min="0.01"
               value={amount}
+              aria-describedby={errors.amount ? 'amount-error' : undefined}
+              aria-invalid={!!errors.amount}
               onChange={(e) => setAmount(e.target.value)}
               className={`block w-full rounded-lg border px-3 py-2 text-sm shadow-sm dark:bg-zinc-800 ${
                 errors.amount
@@ -232,7 +237,10 @@ export default function TransactionForm({
             </div>
           </div>
           {errors.amount && (
-            <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+            <p
+              id="amount-error"
+              className="mt-1 text-sm text-red-600 dark:text-red-400"
+            >
               {errors.amount}
             </p>
           )}
@@ -289,6 +297,10 @@ export default function TransactionForm({
           id="description"
           type="text"
           value={description}
+          aria-describedby={
+            errors.description ? 'description-error' : undefined
+          }
+          aria-invalid={!!errors.description}
           onChange={(e) => setDescription(e.target.value)}
           className={`mt-2 block w-full rounded-lg border px-3 py-2 text-sm shadow-sm dark:bg-zinc-800 ${
             errors.description
@@ -298,7 +310,10 @@ export default function TransactionForm({
           placeholder="e.g., Monthly salary, Grocery shopping"
         />
         {errors.description && (
-          <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+          <p
+            id="description-error"
+            className="mt-1 text-sm text-red-600 dark:text-red-400"
+          >
             {errors.description}
           </p>
         )}
@@ -314,6 +329,8 @@ export default function TransactionForm({
         <select
           id="category"
           value={categoryId}
+          aria-describedby={errors.categoryId ? 'category-error' : undefined}
+          aria-invalid={!!errors.categoryId}
           onChange={(e) => setCategoryId(e.target.value)}
           className={`mt-2 block w-full rounded-lg border px-3 py-2 text-sm shadow-sm dark:bg-zinc-800 ${
             errors.categoryId
@@ -328,7 +345,10 @@ export default function TransactionForm({
           ))}
         </select>
         {errors.categoryId && (
-          <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+          <p
+            id="category-error"
+            className="mt-1 text-sm text-red-600 dark:text-red-400"
+          >
             {errors.categoryId}
           </p>
         )}

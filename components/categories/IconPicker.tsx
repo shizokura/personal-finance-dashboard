@@ -232,6 +232,7 @@ export default function IconPicker({
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
             <input
               type="text"
+              aria-label="Search icons"
               placeholder="Search icons..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -269,6 +270,8 @@ export default function IconPicker({
                     onChange(iconName)
                     setIsOpen(false)
                   }}
+                  aria-label={`Select icon ${iconName}`}
+                  aria-pressed={isSelected}
                   className={`flex flex-col items-center justify-center gap-1 rounded-lg p-2 transition-all ${
                     isSelected
                       ? 'ring-2 ring-zinc-900 dark:ring-zinc-100'

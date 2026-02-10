@@ -1,8 +1,13 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
+import {
+  useFocusTrap,
+  useEscapeKey,
+  useFocusRestoration,
+} from '@/lib/accessibility'
 
 interface ModalProps {
   isOpen: boolean
@@ -11,6 +16,7 @@ interface ModalProps {
   maxWidth?: string
   maxHeight?: string
   children: React.ReactNode
+  role?: 'dialog' | 'alertdialog'
 }
 
 export default function Modal({
@@ -20,12 +26,17 @@ export default function Modal({
   maxWidth = 'max-w-lg',
   maxHeight = 'max-h-[80vh]',
   children,
+  role = 'dialog',
 }: ModalProps) {
   const [mounted, setMounted] = useState(false)
+  const containerRef = useFocusTrap(isOpen) as React.RefObject<HTMLDivElement>
+  const closeButtonRef = useRef<HTMLButtonElement>(null)
+
+  useEscapeKey(onClose, isOpen)
+  useFocusRestoration(isOpen)
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setMounted(true)
     }
   }, [])
@@ -42,6 +53,12 @@ export default function Modal({
     }
   }, [isOpen])
 
+  useEffect(() => {
+    if (isOpen && closeButtonRef.current) {
+      closeButtonRef.current.focus()
+    }
+  }, [isOpen])
+
   if (!isOpen || !mounted) {
     return null
   }
@@ -53,16 +70,25 @@ export default function Modal({
         onClick={onClose}
       />
       <div
+        ref={containerRef}
+        role={role}
+        aria-modal="true"
+        aria-labelledby={title ? 'modal-title' : undefined}
         className={`relative z-10 w-full ${maxWidth} ${maxHeight} flex flex-col rounded-lg border border-zinc-200 bg-white shadow-xl dark:border-zinc-700 dark:bg-zinc-900`}
       >
         {title && (
           <div className="flex items-center justify-between border-b border-zinc-200 p-4 dark:border-zinc-700">
-            <span className="text-sm font-medium text-zinc-900 dark:text-zinc-50">
+            <span
+              id="modal-title"
+              className="text-sm font-medium text-zinc-900 dark:text-zinc-50"
+            >
               {title}
             </span>
             <button
+              ref={closeButtonRef}
               type="button"
               onClick={onClose}
+              aria-label="Close modal"
               className="rounded p-1 text-zinc-500 transition-colors hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
             >
               <X className="h-4 w-4" />

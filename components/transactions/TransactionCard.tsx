@@ -5,7 +5,8 @@ import { kebabToPascal } from '@/lib/utils/icon-helpers'
 import { formatDate, formatCurrency } from '@/lib/utils/format-utils'
 import * as Icons from 'lucide-react'
 import { Pencil, Trash2, MoreVertical } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useRef } from 'react'
+import { useEscapeKey } from '@/lib/accessibility'
 
 interface IconProps {
   className?: string
@@ -30,6 +31,9 @@ export default function TransactionCard({
   onDelete,
 }: TransactionCardProps) {
   const [showMenu, setShowMenu] = useState(false)
+  const menuButtonRef = useRef<HTMLButtonElement>(null)
+
+  useEscapeKey(() => setShowMenu(false), showMenu)
 
   const isIncome = transaction.type === 'income'
   const IconComponent = (
@@ -102,8 +106,12 @@ export default function TransactionCard({
 
         <div className="relative ml-2 flex-shrink-0">
           <button
+            ref={menuButtonRef}
             type="button"
             onClick={() => setShowMenu(!showMenu)}
+            aria-haspopup="true"
+            aria-expanded={showMenu}
+            aria-label="More options"
             className="rounded-md p-1 text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-800 dark:hover:text-zinc-300"
           >
             <MoreVertical className="h-4 w-4" />
@@ -115,8 +123,13 @@ export default function TransactionCard({
                 className="fixed inset-0 z-10"
                 onClick={() => setShowMenu(false)}
               />
-              <div className="absolute right-0 top-full z-20 mt-1 w-32 rounded-md border border-zinc-200 bg-white py-1 shadow-lg dark:border-zinc-700 dark:bg-zinc-900">
+              <div
+                role="menu"
+                aria-label="Transaction options"
+                className="absolute right-0 top-full z-20 mt-1 w-32 rounded-md border border-zinc-200 bg-white py-1 shadow-lg dark:border-zinc-700 dark:bg-zinc-900"
+              >
                 <button
+                  role="menuitem"
                   type="button"
                   onClick={() => {
                     onEdit(transaction)
@@ -128,6 +141,7 @@ export default function TransactionCard({
                   Edit
                 </button>
                 <button
+                  role="menuitem"
                   type="button"
                   onClick={() => {
                     onDelete(transaction)

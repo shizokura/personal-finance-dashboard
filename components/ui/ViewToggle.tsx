@@ -26,6 +26,8 @@ export default function ViewToggle<T extends string>({
             key={option.id}
             type="button"
             onClick={() => onChange(option.id)}
+            aria-label={`Show ${option.label} view`}
+            aria-pressed={value === option.id}
             className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
               value === option.id
                 ? 'bg-white text-zinc-900 shadow-sm dark:bg-zinc-700 dark:text-zinc-50'

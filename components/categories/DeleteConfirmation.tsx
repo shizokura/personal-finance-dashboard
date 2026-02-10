@@ -46,22 +46,30 @@ export default function DeleteConfirmation({
     .filter((cat) => !cat.parentId)
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="delete-category-title"
+      className="fixed inset-0 z-50 flex items-center justify-center"
+    >
       <div
         className="fixed inset-0 bg-black/50 backdrop-blur-sm"
         onClick={onClose}
       />
       <div className="relative z-10 w-full max-w-md rounded-lg bg-white p-6 shadow-lg dark:bg-zinc-900 sm:mx-4">
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-50">
+          <h2
+            id="delete-category-title"
+            className="text-xl font-semibold text-zinc-900 dark:text-zinc-50"
+          >
             Delete Category
           </h2>
           <button
             type="button"
             onClick={onClose}
+            aria-label="Close modal"
             className="rounded-md p-1 text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-500 dark:hover:bg-zinc-800 dark:hover:text-zinc-400"
           >
-            <span className="sr-only">Close</span>
             <X className="h-5 w-5" />
           </button>
         </div>
@@ -146,6 +154,7 @@ export default function DeleteConfirmation({
           <button
             type="button"
             onClick={onClose}
+            aria-label="Cancel deletion"
             className="rounded-lg border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 dark:border-zinc-600 dark:text-zinc-300 dark:hover:bg-zinc-800 sm:order-2"
           >
             Cancel
@@ -153,6 +162,7 @@ export default function DeleteConfirmation({
           <button
             type="button"
             onClick={() => onConfirm()}
+            aria-label="Confirm deletion"
             className="flex items-center justify-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-700 sm:order-1"
           >
             <X className="h-4 w-4" />

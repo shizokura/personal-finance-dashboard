@@ -91,52 +91,67 @@ export default function MonthlyTrendChart({
         <EmptyState message="No trend data available yet. Add transactions to see your monthly trends." />
       ) : (
         <div className="mt-4">
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={chartData}>
-              <CartesianGrid
-                strokeDasharray="3 3"
-                className={`${GRID_STROKE.light} dark:${GRID_STROKE.dark}`}
-              />
-              <XAxis
-                dataKey="period"
-                className="text-sm"
-                tick={{ fontSize: 12, fill: colors.tick }}
-              />
-              <YAxis
-                className="text-sm"
-                tick={{ fontSize: 12, fill: colors.tick }}
-              />
-              <Tooltip content={<CustomTooltip currency={currency} />} />
-              <Legend />
-              <Line
-                type="monotone"
-                dataKey="income"
-                stroke={colors.income}
-                strokeWidth={2}
-                name="Income"
-                dot={{ r: 4 }}
-                activeDot={{ r: 6 }}
-              />
-              <Line
-                type="monotone"
-                dataKey="expenses"
-                stroke={colors.expenses}
-                strokeWidth={2}
-                name="Expenses"
-                dot={{ r: 4 }}
-                activeDot={{ r: 6 }}
-              />
-              <Line
-                type="monotone"
-                dataKey="savings"
-                stroke={colors.savings}
-                strokeWidth={2}
-                name="Savings"
-                dot={{ r: 4 }}
-                activeDot={{ r: 6 }}
-              />
-            </LineChart>
-          </ResponsiveContainer>
+          <p id="trend-chart-desc" className="sr-only">
+            {trends
+              .map(
+                (t) =>
+                  `${t.periodLabel}: Income ${formatCurrency(t.income, currency)}, Expenses ${formatCurrency(t.expenses, currency)}, Savings ${formatCurrency(t.savings, currency)}`
+              )
+              .join('; ')}
+          </p>
+          <div
+            role="img"
+            aria-label={`Monthly trend chart showing ${trends.length} periods`}
+            aria-describedby="trend-chart-desc"
+            className="overflow-x-auto"
+          >
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={chartData}>
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  className={`${GRID_STROKE.light} dark:${GRID_STROKE.dark}`}
+                />
+                <XAxis
+                  dataKey="period"
+                  className="text-sm"
+                  tick={{ fontSize: 12, fill: colors.tick }}
+                />
+                <YAxis
+                  className="text-sm"
+                  tick={{ fontSize: 12, fill: colors.tick }}
+                />
+                <Tooltip content={<CustomTooltip currency={currency} />} />
+                <Legend />
+                <Line
+                  type="monotone"
+                  dataKey="income"
+                  stroke={colors.income}
+                  strokeWidth={2}
+                  name="Income"
+                  dot={{ r: 4 }}
+                  activeDot={{ r: 6 }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="expenses"
+                  stroke={colors.expenses}
+                  strokeWidth={2}
+                  name="Expenses"
+                  dot={{ r: 4 }}
+                  activeDot={{ r: 6 }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="savings"
+                  stroke={colors.savings}
+                  strokeWidth={2}
+                  name="Savings"
+                  dot={{ r: 4 }}
+                  activeDot={{ r: 6 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       )}
     </CardContainer>

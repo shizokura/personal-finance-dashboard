@@ -4,6 +4,8 @@ import './globals.css'
 import Header from '@/components/Header'
 import DevTools from '@/components/DevTools'
 import ScrollToTop from '@/components/ScrollToTop'
+import SkipLink from '@/components/SkipLink'
+import { ThemeProvider } from '@/contexts/ThemeContext'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -30,12 +32,18 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Header />
-        <ScrollToTop />
-        <div className="mx-auto min-h-screen max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-          {children}
-        </div>
-        <DevTools />
+        <ThemeProvider>
+          <SkipLink />
+          <Header />
+          <ScrollToTop />
+          <div
+            id="main-content"
+            className="mx-auto min-h-screen max-w-7xl px-4 py-8 sm:px-6 lg:px-8"
+          >
+            {children}
+          </div>
+          <DevTools />
+        </ThemeProvider>
       </body>
     </html>
   )

@@ -2,10 +2,18 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { Menu, X, Plus } from 'lucide-react'
+import { useEscapeKey } from '@/lib/accessibility'
+import ThemeToggle from '@/components/ThemeToggle'
 
 export default function Header() {
+  const pathname = usePathname()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+
+  const isActive = (href: string) => pathname === href
+
+  useEscapeKey(() => setIsMobileMenuOpen(false), isMobileMenuOpen)
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-zinc-200 bg-white/80 backdrop-blur-sm dark:border-zinc-800 dark:bg-black/80">
@@ -18,43 +26,54 @@ export default function Header() {
           </Link>
         </div>
 
-        <nav className="hidden md:flex md:items-center md:space-x-1">
+        <nav
+          role="navigation"
+          aria-label="Main navigation"
+          className="hidden md:flex md:items-center md:space-x-4"
+        >
           <Link
             href="/"
+            aria-current={isActive('/') ? 'page' : undefined}
             className="rounded-md px-3 py-2 text-sm font-medium text-zinc-600 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-50"
           >
             Dashboard
           </Link>
           <Link
             href="/transactions"
+            aria-current={isActive('/transactions') ? 'page' : undefined}
             className="rounded-md px-3 py-2 text-sm font-medium text-zinc-600 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-50"
           >
             Transactions
           </Link>
           <Link
             href="/categories"
+            aria-current={isActive('/categories') ? 'page' : undefined}
             className="rounded-md px-3 py-2 text-sm font-medium text-zinc-600 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-50"
           >
             Categories
           </Link>
           <Link
             href="/budgets"
+            aria-current={isActive('/budgets') ? 'page' : undefined}
             className="rounded-md px-3 py-2 text-sm font-medium text-zinc-600 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-50"
           >
             Budgets
           </Link>
           <Link
             href="/insights"
+            aria-current={isActive('/insights') ? 'page' : undefined}
             className="rounded-md px-3 py-2 text-sm font-medium text-zinc-600 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-50"
           >
             Insights
           </Link>
           <Link
             href="/settings"
+            aria-current={isActive('/settings') ? 'page' : undefined}
             className="rounded-md px-3 py-2 text-sm font-medium text-zinc-600 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-50"
           >
             Settings
           </Link>
+          <ThemeToggle />
         </nav>
 
         <div className="flex items-center space-x-4">
@@ -69,9 +88,11 @@ export default function Header() {
           <button
             type="button"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-expanded={isMobileMenuOpen}
+            aria-controls="mobile-menu"
+            aria-label={isMobileMenuOpen ? 'Close main menu' : 'Open main menu'}
             className="md:hidden inline-flex items-center justify-center rounded-md p-2 text-zinc-600 transition-colors hover:bg-zinc-100 hover:text-zinc-900 focus:outline-none focus:ring-2 focus:ring-zinc-500 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-50"
           >
-            <span className="sr-only">Open main menu</span>
             {isMobileMenuOpen ? (
               <X className="h-6 w-6" />
             ) : (
@@ -82,10 +103,16 @@ export default function Header() {
       </div>
 
       {isMobileMenuOpen && (
-        <div className="border-t border-zinc-200 bg-white md:hidden dark:border-zinc-800 dark:bg-black">
+        <div
+          id="mobile-menu"
+          role="navigation"
+          aria-label="Mobile navigation"
+          className="border-t border-zinc-200 bg-white md:hidden dark:border-zinc-800 dark:bg-black"
+        >
           <div className="space-y-1 px-4 pb-3 pt-2">
             <Link
               href="/"
+              aria-current={isActive('/') ? 'page' : undefined}
               className="block rounded-md px-3 py-2 text-base font-medium text-zinc-900 dark:text-zinc-50"
               onClick={() => setIsMobileMenuOpen(false)}
             >
@@ -93,6 +120,7 @@ export default function Header() {
             </Link>
             <Link
               href="/transactions"
+              aria-current={isActive('/transactions') ? 'page' : undefined}
               className="block rounded-md px-3 py-2 text-base font-medium text-zinc-600 transition-colors hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
               onClick={() => setIsMobileMenuOpen(false)}
             >
@@ -100,6 +128,7 @@ export default function Header() {
             </Link>
             <Link
               href="/categories"
+              aria-current={isActive('/categories') ? 'page' : undefined}
               className="block rounded-md px-3 py-2 text-base font-medium text-zinc-600 transition-colors hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
               onClick={() => setIsMobileMenuOpen(false)}
             >
@@ -107,6 +136,7 @@ export default function Header() {
             </Link>
             <Link
               href="/budgets"
+              aria-current={isActive('/budgets') ? 'page' : undefined}
               className="block rounded-md px-3 py-2 text-base font-medium text-zinc-600 transition-colors hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
               onClick={() => setIsMobileMenuOpen(false)}
             >
@@ -114,6 +144,7 @@ export default function Header() {
             </Link>
             <Link
               href="/insights"
+              aria-current={isActive('/insights') ? 'page' : undefined}
               className="block rounded-md px-3 py-2 text-base font-medium text-zinc-600 transition-colors hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
               onClick={() => setIsMobileMenuOpen(false)}
             >
@@ -121,6 +152,7 @@ export default function Header() {
             </Link>
             <Link
               href="/settings"
+              aria-current={isActive('/settings') ? 'page' : undefined}
               className="block rounded-md px-3 py-2 text-base font-medium text-zinc-600 transition-colors hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
               onClick={() => setIsMobileMenuOpen(false)}
             >

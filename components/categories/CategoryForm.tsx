@@ -213,6 +213,8 @@ export default function CategoryForm({
           id="name"
           type="text"
           value={formData.name}
+          aria-describedby={errors.name ? 'name-error' : undefined}
+          aria-invalid={!!errors.name}
           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
           className={`mt-2 block w-full rounded-lg border px-3 py-2 text-sm shadow-sm dark:bg-zinc-800 ${
             errors.name
@@ -222,7 +224,10 @@ export default function CategoryForm({
           placeholder="e.g., Groceries, Salary"
         />
         {errors.name && (
-          <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+          <p
+            id="name-error"
+            className="mt-1 text-sm text-red-600 dark:text-red-400"
+          >
             {errors.name}
           </p>
         )}
@@ -241,7 +246,10 @@ export default function CategoryForm({
             />
           </div>
           {errors.icon && (
-            <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+            <p
+              id="icon-error"
+              className="mt-1 text-sm text-red-600 dark:text-red-400"
+            >
               {errors.icon}
             </p>
           )}
@@ -258,7 +266,10 @@ export default function CategoryForm({
             />
           </div>
           {errors.color && (
-            <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+            <p
+              id="color-error"
+              className="mt-1 text-sm text-red-600 dark:text-red-400"
+            >
               {errors.color}
             </p>
           )}
@@ -275,6 +286,8 @@ export default function CategoryForm({
         <select
           id="parent"
           value={formData.parentId}
+          aria-describedby={errors.parentId ? 'parent-error' : undefined}
+          aria-invalid={!!errors.parentId}
           onChange={(e) =>
             setFormData({ ...formData, parentId: e.target.value })
           }
@@ -292,7 +305,10 @@ export default function CategoryForm({
           ))}
         </select>
         {errors.parentId && (
-          <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+          <p
+            id="parent-error"
+            className="mt-1 text-sm text-red-600 dark:text-red-400"
+          >
             {errors.parentId}
           </p>
         )}
@@ -311,6 +327,8 @@ export default function CategoryForm({
           step="0.01"
           min="0"
           value={formData.budgetLimit}
+          aria-describedby={errors.budgetLimit ? 'budget-error' : undefined}
+          aria-invalid={!!errors.budgetLimit}
           onChange={(e) =>
             setFormData({ ...formData, budgetLimit: e.target.value })
           }
@@ -322,7 +340,10 @@ export default function CategoryForm({
           placeholder="0.00"
         />
         {errors.budgetLimit && (
-          <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+          <p
+            id="budget-error"
+            className="mt-1 text-sm text-red-600 dark:text-red-400"
+          >
             {errors.budgetLimit}
           </p>
         )}
