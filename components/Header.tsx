@@ -21,7 +21,7 @@ export default function Header() {
         <div className="flex items-center">
           <Link href="/" className="flex items-center space-x-2">
             <span className="text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
-              FinanceDashboard
+              Finance Dashboard
             </span>
           </Link>
         </div>

@@ -3,7 +3,7 @@
 ## Build Commands
 
 ```bash
-npm run dev              # Start development server (localhost:3000)
+npm run dev              # Start dev server (localhost:3000) - assume always running
 npm run build            # Build for production
 npm start                # Start production server
 npm run lint             # Run ESLint
@@ -74,12 +74,26 @@ export default function Header() {
 - Functional components with hooks
 - `'use client'` for client components only
 - Default exports, Link from `next/link`
+- Props interfaces defined before component
 
 ### Type Safety
 
 - Prefer explicit types over `any`
 - Use interfaces for object shapes
 - Export types from `@/lib/types`
+
+### Component Organization
+
+- Feature folders: `components/dashboard/`, `components/transactions/`, `components/ui/`
+- Barrel exports: `index.ts` in directories for clean imports
+- Shared UI in `components/ui/`, feature-specific in feature folders
+
+### Accessibility
+
+- Use hooks from `@/lib/accessibility`: `useFocusTrap`, `useEscapeKey`, `useFocusRestoration`
+- ARIA attributes: `aria-label`, `aria-current`, `role`, `aria-expanded`
+- SkipLink component at top of layout
+- Keyboard navigation support (Escape, Tab, Enter)
 
 ### Styling (Tailwind CSS v4)
 
@@ -93,25 +107,43 @@ export default function Header() {
 - try/catch for async operations
 - Validate at boundaries (forms, API)
 - Handle loading states gracefully
+- Use `console.error` for unexpected errors
 
 ### Persistence (localStorage)
 
 - Use `storage` singleton from `@/lib/storage`
 - Methods: `saveTransaction()`, `getTransactions()`, `deleteTransaction()`
+- Subscribe to `storageEvents` for reactive updates
 - Check `lib/storage/` for API
+
+### Data Flow
+
+- Custom hooks for data fetching: `useDashboardData`, `useAsyncLoader`, `usePagination`
+- Event-driven: `storageEvents.on('transactions', callback)` for reactivity
+- Calculations in `lib/calculations/` for summaries, trends, filters
+
+### Charts
+
+- Use Recharts for visualizations
+- Import from `recharts` package
+
+### Icons
+
+- Use Lucide React icons: `import { Menu, X } from 'lucide-react'`
+- Size classes: `h-4 w-4`, `h-5 w-5`, `h-6 w-6`
 
 ### Before Committing
 
 1. `npm run format`
 2. `npm run lint`
 3. `npx tsc --noEmit`
-4. `npm run dev` to verify
+4. Verify in browser (dev server assumed running)
 
 ---
 
 ## Tech Stack
 
-Next.js 16.1.6 (App Router) · React 19.2.3 · Tailwind CSS v4 · TypeScript v5 · Lucide React · ESLint + Prettier
+Next.js 16.1.6 (App Router) · React 19.2.3 · Tailwind CSS v4 · TypeScript v5 · Lucide React · Recharts · ESLint + Prettier
 
 ---
 
