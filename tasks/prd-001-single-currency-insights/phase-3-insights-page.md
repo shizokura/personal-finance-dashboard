@@ -12,11 +12,11 @@ Create `/insights` route with advanced analytics, charts, and financial insights
 
 **Create**: `app/insights/page.tsx`
 
-- [ ] Create main Insights page layout
-- [ ] Add page metadata
-- [ ] Handle client-side rendering
-- [ ] Fetch data: transactions, categories, settings
-- [ ] Handle empty states (link to Add Entry page)
+- [x] Create main Insights page layout
+- [x] Add page metadata
+- [x] Handle client-side rendering
+- [x] Fetch data: transactions, categories, settings
+- [x] Handle empty states (link to Add Entry page)
 
 ---
 
@@ -24,11 +24,11 @@ Create `/insights` route with advanced analytics, charts, and financial insights
 
 **Create**: `components/insights/PeriodSelector.tsx`
 
-- [ ] Tab selector: `This Week | This Month | This Year | Custom Range`
-- [ ] Custom Range: Date picker with start/end dates
-- [ ] Persist selection to `settings.insightsPeriod` (default: 'thisMonth')
-- [ ] Callback to parent when period changes
-- [ ] Keyboard navigation support
+- [x] Tab selector: `This Week | This Month | This Year | Custom Range`
+- [x] Custom Range: Date picker with start/end dates
+- [x] Persist selection to `settings.insightsPeriod` (default: 'thisMonth')
+- [x] Callback to parent when period changes
+- [x] Keyboard navigation support
 
 ---
 
@@ -36,15 +36,15 @@ Create `/insights` route with advanced analytics, charts, and financial insights
 
 **Create**: `components/insights/SpendingTrends.tsx`
 
-- [ ] Line chart using Recharts (extend from `MonthlyTrendChart.tsx`)
-- [ ] X-axis: Time periods (days/weeks/months based on selection)
-- [ ] Y-axis: Currency amount
-- [ ] Two lines: Income (green), Expenses (red)
-- [ ] Tooltip on hover showing exact amounts
-- [ ] Previous period comparison with percentage changes
-- [ ] Color indicators: green = positive change, red = negative change
-- [ ] Data source: `calculateMonthlyTrends()` from `lib/calculations/trend-calculations.ts`
-- [ ] Adapt for weekly/daily periods as needed
+- [x] Line chart using Recharts (extend from `MonthlyTrendChart.tsx`)
+- [x] X-axis: Time periods (days/weeks/months based on selection)
+- [x] Y-axis: Currency amount
+- [x] Two lines: Income (green), Expenses (red)
+- [x] Tooltip on hover showing exact amounts
+- [x] Previous period comparison with percentage changes
+- [x] Color indicators: green = positive change, red = negative change
+- [x] Data source: `calculateMonthlyTrends()` from `lib/calculations/trend-calculations.ts`
+- [x] Adapt for weekly/daily periods as needed
 
 ---
 
@@ -52,15 +52,15 @@ Create `/insights` route with advanced analytics, charts, and financial insights
 
 **Create**: `components/insights/CategoryBreakdown.tsx`
 
-- [ ] View toggle: Pie | Bar | List (use existing `ChartViewType`)
-- [ ] Pie chart: Interactive, click to drill into subcategories
-- [ ] Bar chart: Horizontal bars showing top categories
-- [ ] List view: Category name, amount, percentage, color-coded bar
-- [ ] Top categories by amount
-- [ ] Color-coded by category color
-- [ ] Click on category to filter transactions (link to Transactions page)
-- [ ] Data source: `calculateCategoryBreakdown()` from `lib/calculations/breakdown-calculations.ts`
-- [ ] Empty state when no categories
+- [x] View toggle: Pie | Bar | List (use existing `ChartViewType`)
+- [x] Pie chart: Interactive, click to drill into subcategories
+- [x] Bar chart: Horizontal bars showing top categories
+- [x] List view: Category name, amount, percentage, color-coded bar
+- [x] Top categories by amount
+- [x] Color-coded by category color
+- [x] Click on category to filter transactions (link to Transactions page)
+- [x] Data source: `calculateCategoryBreakdown()` from `lib/calculations/breakdown-calculations.ts`
+- [x] Empty state when no categories
 
 ---
 
@@ -68,14 +68,14 @@ Create `/insights` route with advanced analytics, charts, and financial insights
 
 **Create**: `components/insights/IncomeVsExpenses.tsx`
 
-- [ ] Summary cards: Total Income, Total Expenses, Net Savings
-- [ ] Each card shows amount and percentage change vs previous period
-- [ ] Bar chart showing income vs expenses per period
-- [ ] Savings rate gauge or progress indicator (0-100%)
-- [ ] Income sources breakdown by category (list)
-- [ ] Metrics: Total Income, Total Expenses, Net Savings, Savings Rate
-- [ ] Data source: `calculateMonthlySummary()` for period totals
-- [ ] Calculate average daily/weekly spending
+- [x] Summary cards: Total Income, Total Expenses, Net Savings
+- [x] Each card shows amount and percentage change vs previous period
+- [x] Bar chart showing income vs expenses per period
+- [x] Savings rate gauge or progress indicator (0-100%)
+- [x] Income sources breakdown by category (list)
+- [x] Metrics: Total Income, Total Expenses, Net Savings, Savings Rate
+- [x] Data source: `calculateMonthlySummary()` for period totals
+- [x] Calculate average daily/weekly spending
 
 ---
 
@@ -83,19 +83,19 @@ Create `/insights` route with advanced analytics, charts, and financial insights
 
 **Create**: `components/insights/BudgetHealth.tsx`
 
-- [ ] List all categories with `budgetLimit` set
-- [ ] Progress bars showing spent vs budget
-- [ ] Status indicators with colors:
+- [x] List all categories with `budgetLimit` set
+- [x] Progress bars showing spent vs budget
+- [x] Status indicators with colors:
   - On Track (green): Spent ≤ 75% of budget
   - Warning (yellow): Spent > 75% and ≤ 100% of budget
   - Over Budget (red): Spent > 100% of budget
-- [ ] Alerts section:
+- [x] Alerts section:
   - "You're 80% through your Food & Dining budget"
   - Show categories approaching budget (>75%)
   - Show categories over budget
   - Show positive spending trends (vs previous period)
-- [ ] Budget health score (0-100) - optional
-- [ ] Data source: `calculateBudgetProgress()` from `lib/calculations/budget-calculations.ts`
+- [x] Budget health score (0-100) - optional
+- [x] Data source: `calculateBudgetProgress()` from `lib/calculations/budget-calculations.ts`
 
 ---
 
@@ -103,13 +103,13 @@ Create `/insights` route with advanced analytics, charts, and financial insights
 
 **Create**: `components/insights/InsightsAlerts.tsx`
 
-- [ ] List of insights based on data analysis
-- [ ] Example alerts:
+- [x] List of insights based on data analysis
+- [x] Example alerts:
   - "Spending on Food & Dining is 15% higher than last month"
   - "You saved $1,750 this month - 28% more than last month"
   - "Consider setting a budget for Entertainment"
-- [ ] Icon indicators for each insight type
-- [ ] Color-coded: positive (green), negative (red), info (blue)
+- [x] Icon indicators for each insight type
+- [x] Color-coded: positive (green), negative (red), info (blue)
 
 ---
 
@@ -117,7 +117,7 @@ Create `/insights` route with advanced analytics, charts, and financial insights
 
 **Create**: `components/insights/index.ts`
 
-- [ ] Export all insights components: `PeriodSelector`, `SpendingTrends`, `CategoryBreakdown`, `IncomeVsExpenses`, `BudgetHealth`, `InsightsAlerts`
+- [x] Export all insights components: `PeriodSelector`, `SpendingTrends`, `CategoryBreakdown`, `IncomeVsExpenses`, `BudgetHealth`, `InsightsAlerts`
 
 ---
 
@@ -125,9 +125,9 @@ Create `/insights` route with advanced analytics, charts, and financial insights
 
 **File**: `components/Header.tsx`
 
-- [ ] Add Insights link to navigation (desktop)
-- [ ] Add Insights link to mobile menu
-- [ ] Verify link routes to `/insights`
+- [x] Add Insights link to navigation (desktop)
+- [x] Add Insights link to mobile menu
+- [x] Verify link routes to `/insights`
 
 ---
 
@@ -187,28 +187,28 @@ Layout structure:
 ## Data Flow Implementation
 
 1. **Load Data**:
-   - [ ] Fetch all transactions from `storage.getTransactions()`
-   - [ ] Fetch all categories from `storage.getCategories()`
-   - [ ] Get selected period from settings
+   - [x] Fetch all transactions from `storage.getTransactions()`
+   - [x] Fetch all categories from `storage.getCategories()`
+   - [x] Get selected period from settings
 
 2. **Filter Transactions**:
-   - [ ] Filter by date range based on selected period
-   - [ ] Filter by status: 'completed' only
+   - [x] Filter by date range based on selected period
+   - [x] Filter by status: 'completed' only
 
 3. **Calculate Metrics**:
-   - [ ] Use `calculateMonthlySummary()` for period totals
-   - [ ] Use `calculateCategoryBreakdown()` for category analysis
-   - [ ] Use `calculateBudgetProgress()` for budget health
-   - [ ] Use `calculateTrendComparison()` for period comparisons
+   - [x] Use `calculateMonthlySummary()` for period totals
+   - [x] Use `calculateCategoryBreakdown()` for category analysis
+   - [x] Use `calculateBudgetProgress()` for budget health
+   - [x] Use `calculateTrendComparison()` for period comparisons
 
 4. **Render Charts**:
-   - [ ] Use Recharts for visualizations
-   - [ ] Ensure dark mode compatibility
+   - [x] Use Recharts for visualizations
+   - [x] Ensure dark mode compatibility
 
 5. **Handle Empty States**:
-   - [ ] Show "No transactions for this period" if no data
-   - [ ] Link to Add Entry page
-   - [ ] Use `components/ui/EmptyState.tsx`
+   - [x] Show "No transactions for this period" if no data
+   - [x] Link to Add Entry page
+   - [x] Use `components/ui/EmptyState.tsx`
 
 ---
 
