@@ -4,6 +4,12 @@ import { STORAGE_KEYS } from './keys'
 import { checkSchemaVersion, migrate } from './schema'
 import { storageEvents } from './storage-events'
 
+const DEFAULT_SETTINGS = {
+  currency: 'USD' as const,
+  theme: 'system' as const,
+  insightsPeriod: 'thisMonth' as const,
+}
+
 class StorageService {
   private initialized = false
 
@@ -164,7 +170,11 @@ class StorageService {
   }
 
   getSettings(): Record<string, unknown> {
-    return this.get<Record<string, unknown>>(STORAGE_KEYS.SETTINGS, {})
+    const settings = this.get<Record<string, unknown>>(
+      STORAGE_KEYS.SETTINGS,
+      {}
+    )
+    return { ...DEFAULT_SETTINGS, ...settings }
   }
 
   saveSetting(key: string, value: unknown): void {
@@ -179,6 +189,11 @@ class StorageService {
     delete settings[key]
     this.set(STORAGE_KEYS.SETTINGS, settings)
     storageEvents.emit('settings', { settings: { action: 'delete', key } })
+  }
+
+  saveSettings(settings: Record<string, unknown>): void {
+    this.set(STORAGE_KEYS.SETTINGS, settings)
+    storageEvents.emit('settings', { settings: { action: 'update' } })
   }
 
   getSavingsGoals(): SavingsGoal[] {
@@ -243,6 +258,7 @@ class StorageService {
 }
 
 export { StorageService }
+export { DEFAULT_SETTINGS }
 export const storage = new StorageService()
 
 export default storage

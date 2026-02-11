@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import type { SavingsGoal } from '@/lib/types'
+import type { SavingsGoal, CurrencyCode } from '@/lib/types'
 import { SUPPORTED_CURRENCIES } from '@/lib/types/common'
 import storage from '@/lib/storage'
 import { calculateSavingsGoalProgress } from '@/lib/calculations'
@@ -25,6 +25,13 @@ export default function SavingsGoalForm({
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [settingsCurrency] = useState<CurrencyCode>(() => {
+    if (typeof window !== 'undefined') {
+      const settings = storage.getSettings()
+      return (settings.currency as CurrencyCode) || 'USD'
+    }
+    return 'USD'
+  })
 
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {}
@@ -151,8 +158,8 @@ export default function SavingsGoalForm({
           Target Amount
         </label>
         <div className="relative mt-2">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 rounded border border-zinc-300 bg-zinc-50 px-2 py-0.5 text-sm font-medium text-zinc-700 focus:outline-none dark:border-zinc-600 dark:bg-zinc-700 dark:text-zinc-300">
-            {SUPPORTED_CURRENCIES.USD.symbol}
+          <span className="absolute left-2 top-1/2 -translate-y-1/2 rounded border border-zinc-300 bg-zinc-50 px-2 py-0.5 text-sm font-medium text-zinc-700 focus:outline-none dark:border-zinc-600 dark:bg-zinc-700 dark:text-zinc-300">
+            {SUPPORTED_CURRENCIES[settingsCurrency].symbol}
           </span>
           <input
             id="targetAmount"
@@ -167,7 +174,7 @@ export default function SavingsGoalForm({
             onChange={(e) =>
               setFormData({ ...formData, targetAmount: e.target.value })
             }
-            className={`block w-full rounded-lg border px-3 py-2 pl-16 text-sm shadow-sm dark:bg-zinc-800 ${
+            className={`block w-full rounded-lg border px-3 py-2 pl-12 text-sm shadow-sm dark:bg-zinc-800 ${
               errors.targetAmount
                 ? 'border-red-300 focus:border-red-500 focus:ring-red-500 dark:border-red-700 dark:focus:border-red-500'
                 : 'border-zinc-300 focus:border-zinc-500 focus:ring-zinc-500 dark:border-zinc-600 dark:focus:border-zinc-500'

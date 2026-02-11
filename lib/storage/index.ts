@@ -1,4 +1,5 @@
 export { storage as default, StorageService } from './storage-service'
+export { DEFAULT_SETTINGS } from './storage-service'
 export { STORAGE_KEYS, STORAGE_PREFIX } from './keys'
 export {
   checkSchemaVersion,
