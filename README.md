@@ -39,6 +39,58 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 
 ## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+This project is configured for seamless deployment on Vercel with automatic preview deployments for all pull requests.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Quick Setup
+
+1. **Connect Repository**
+   - Go to [vercel.com/new](https://vercel.com/new)
+   - Import your GitHub repository
+   - Vercel will auto-detect Next.js framework
+
+2. **Configure Build Settings** (automatically detected)
+   - Build Command: `npm run build`
+   - Output Directory: `.next`
+   - Install Command: `npm install`
+
+3. **Deploy**
+   - Click "Deploy" to deploy your main branch to production
+   - Your app will be live at `https://your-project.vercel.app`
+
+### Deployment Workflow
+
+- **Production**: Commits to your default branch trigger production deployments
+- **Preview**: All pull requests automatically deploy to preview URLs for testing
+- **Rollback**: View deployment history in Vercel dashboard to rollback if needed
+
+### Configuration
+
+The `vercel.json` file in the project root contains:
+
+- Build optimization settings
+- Security headers (X-Content-Type-Options, X-Frame-Options, X-XSS-Protection)
+- Rewrite rules for SPA-like navigation
+
+### Troubleshooting
+
+**Build fails locally?**
+
+```bash
+npm run build
+npx tsc --noEmit
+```
+
+**Environment variables not working?**
+
+- Check Vercel dashboard → Settings → Environment Variables
+- Ensure they're set for correct environment (Production/Preview/Development)
+
+**Static assets not loading?**
+
+- Verify `public/` folder contents are committed to git
+- Check build logs for asset compilation errors
+
+### Learn More
+
+- [Next.js Deployment Documentation](https://nextjs.org/docs/app/building-your-application/deploying)
+- [Vercel Next.js Guide](https://vercel.com/docs/frameworks/nextjs)
