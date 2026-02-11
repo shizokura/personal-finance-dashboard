@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import {
   LineChart,
   Line,
@@ -11,11 +11,12 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts'
-import type { MonthlyTrend } from '@/lib/types'
+import type { MonthlyTrend, CurrencyCode } from '@/lib/types'
 import { formatCurrency } from '@/lib/utils/format-utils'
 import { TREND_COLORS, GRID_STROKE, AXIS_TICK_COLOR } from '@/lib/constants'
 import CardContainer from '@/components/layout/CardContainer'
 import EmptyState from '@/components/ui/EmptyState'
+import storage from '@/lib/storage'
 
 function useThemeAwareColors() {
   const isDark = document.documentElement.classList.contains('dark')
@@ -31,13 +32,19 @@ interface CustomTooltipProps {
   active?: boolean
   payload?: Array<{ name: string; value: number }>
   label?: string
+  currency: CurrencyCode
 }
 
-function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
-  const currency = 'USD' as const
+function CustomTooltip({
+  active,
+  payload,
+  label,
+  currency,
+}: CustomTooltipProps) {
   const payloadArray = payload as
     | Array<{ name: string; value: number }>
     | undefined
+
   if (active && payloadArray && payloadArray.length > 0) {
     return (
       <div className="rounded-lg border border-zinc-300 bg-zinc-100 p-3 shadow-lg dark:border-zinc-600 dark:bg-zinc-700">
@@ -67,7 +74,13 @@ export default function MonthlyTrendChart({
   title,
   trends,
 }: MonthlyTrendChartProps) {
-  const currency = 'USD' as const
+  const [currency] = useState<CurrencyCode>(() => {
+    if (typeof window !== 'undefined') {
+      const settings = storage.getSettings()
+      return (settings.currency as CurrencyCode) || 'USD'
+    }
+    return 'USD'
+  })
   const colors = useThemeAwareColors()
 
   const chartData = useMemo(() => {
@@ -114,7 +127,7 @@ export default function MonthlyTrendChart({
                   className="text-sm"
                   tick={{ fontSize: 12, fill: colors.tick }}
                 />
-                <Tooltip content={<CustomTooltip />} />
+                <Tooltip content={<CustomTooltip currency={currency} />} />
                 <Legend />
                 <Line
                   type="monotone"

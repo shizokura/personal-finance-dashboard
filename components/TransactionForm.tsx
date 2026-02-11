@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import type { TransactionType, Transaction } from '@/lib/types'
+import type { CurrencyCode } from '@/lib/types'
 import { SUPPORTED_CURRENCIES } from '@/lib/types/common'
 import { getDefaultCategories } from '@/lib/seed-data'
 import storage from '@/lib/storage'
@@ -41,6 +42,13 @@ export default function TransactionForm({
   const [errors, setErrors] = useState<FormErrors>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [successMessage, setSuccessMessage] = useState('')
+  const [settingsCurrency] = useState<CurrencyCode>(() => {
+    if (typeof window !== 'undefined') {
+      const settings = storage.getSettings()
+      return (settings.currency as CurrencyCode) || 'USD'
+    }
+    return 'USD'
+  })
   const isEditMode = !!transaction
 
   useEffect(() => {
@@ -227,10 +235,13 @@ export default function TransactionForm({
             />
             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
               <span className="text-sm text-zinc-500 dark:text-zinc-400">
-                {SUPPORTED_CURRENCIES.USD.symbol}
+                {SUPPORTED_CURRENCIES[settingsCurrency].symbol}
               </span>
             </div>
           </div>
+          <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+            Amount in {SUPPORTED_CURRENCIES[settingsCurrency].name}
+          </p>
           {errors.amount && (
             <p
               id="amount-error"

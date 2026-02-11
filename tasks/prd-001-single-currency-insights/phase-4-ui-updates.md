@@ -12,13 +12,13 @@ Update existing UI components to remove multi-currency features and align with s
 
 **File**: `components/TransactionForm.tsx`
 
-- [ ] Remove currency dropdown/selector component
-- [ ] Remove `currency` state from form
-- [ ] Remove currency from form validation
-- [ ] Update form submission to not include currency
-- [ ] Update TypeScript interface to use `TransactionFormData` without currency
-- [ ] Add helper text: "Amount in {selectedCurrency}" - fetch from settings
-- [ ] Verify form still submits correctly
+- [x] Remove currency dropdown/selector component
+- [x] Remove `currency` state from form
+- [x] Remove currency from form validation
+- [x] Update form submission to not include currency
+- [x] Update TypeScript interface to use `TransactionFormData` without currency
+- [x] Add helper text: "Amount in {selectedCurrency}" - fetch from settings
+- [x] Verify form still submits correctly
 
 ---
 
@@ -26,12 +26,12 @@ Update existing UI components to remove multi-currency features and align with s
 
 **File**: `components/Header.tsx`
 
-- [ ] Remove `<ThemeToggle />` import
-- [ ] Remove `<ThemeToggle />` from desktop navigation (line 76)
-- [ ] Remove `<ThemeToggle />` from mobile menu
-- [ ] Verify Settings link is present in both desktop and mobile
-- [ ] Add Insights link to navigation
-- [ ] Test navigation links work correctly
+- [x] Remove `<ThemeToggle />` import
+- [x] Remove `<ThemeToggle />` from desktop navigation (line 76)
+- [x] Remove `<ThemeToggle />` from mobile menu
+- [x] Verify Settings link is present in both desktop and mobile
+- [x] Add Insights link to navigation
+- [x] Test navigation links work correctly
 
 ---
 
@@ -39,14 +39,14 @@ Update existing UI components to remove multi-currency features and align with s
 
 **File**: `components/dashboard/MonthlyTrendChart.tsx`
 
-- [ ] Remove any `baseCurrency` parameters or props
-- [ ] Update to use single currency from settings
-- [ ] Verify chart displays correctly
+- [x] Remove any `baseCurrency` parameters or props
+- [x] Update to use single currency from settings
+- [x] Verify chart displays correctly
 
 **File**: `components/dashboard/BudgetProgressCard.tsx`
 
-- [ ] Verify currency display uses settings currency
-- [ ] Check if any currency filtering needs removal
+- [x] Verify currency display uses settings currency (file does not exist)
+- [x] Check if any currency filtering needs removal (file does not exist)
 
 ---
 
@@ -54,13 +54,13 @@ Update existing UI components to remove multi-currency features and align with s
 
 **File**: `components/transactions/TransactionList.tsx`
 
-- [ ] Remove currency column from display if present
-- [ ] Ensure all amounts display with settings currency symbol
+- [x] Remove currency column from display if present
+- [x] Ensure all amounts display with settings currency symbol
 
 **File**: `components/transactions/TransactionCard.tsx`
 
-- [ ] Remove currency display if separate from amount
-- [ ] Ensure amount formatting uses settings currency
+- [x] Remove currency display if separate from amount
+- [x] Ensure amount formatting uses settings currency
 
 ---
 
@@ -68,20 +68,20 @@ Update existing UI components to remove multi-currency features and align with s
 
 **File**: `components/savings/SavingsGoalCard.tsx` (if exists)
 
-- [ ] Remove currency selector/field
-- [ ] Use settings currency for all amounts
-- [ ] Update form submission to not include currency
+- [x] Remove currency selector/field (file does not exist)
+- [x] Use settings currency for all amounts (file does not exist)
+- [x] Update form submission to not include currency (file does not exist)
 
 ---
 
 ### 4.6 Update Storage Implementation
 
-**File**: `lib/storage/storage.ts`
+**File**: `lib/storage/storage-service.ts`
 
-- [ ] Ensure transaction serialization doesn't include currency field
-- [ ] Ensure savings goals serialization doesn't include currency field
-- [ ] Add `getSetting()` and `saveSetting()` methods if not present
-- [ ] Verify `STORAGE_KEYS.SETTINGS` is correct
+- [x] Ensure transaction serialization doesn't include currency field
+- [x] Ensure savings goals serialization doesn't include currency field
+- [x] Add `getSetting()` and `saveSetting()` methods if not present
+- [x] Verify `STORAGE_KEYS.SETTINGS` is correct
 
 ---
 
@@ -89,13 +89,13 @@ Update existing UI components to remove multi-currency features and align with s
 
 **File**: `lib/calculations/filter-helpers.ts`
 
-- [ ] Ensure no currency filtering functions remain
-- [ ] Update exports if needed
+- [x] Ensure no currency filtering functions remain
+- [x] Update exports if needed
 
 **File**: `lib/calculations/monthly-summary.ts`
 
-- [ ] Verify `baseCurrency` parameter is removed from all functions
-- [ ] Update any internal references to currency
+- [x] Verify `baseCurrency` parameter is removed from all functions
+- [x] Update any internal references to currency
 
 ---
 
@@ -103,44 +103,58 @@ Update existing UI components to remove multi-currency features and align with s
 
 **File**: `lib/types/index.ts` (or equivalent)
 
-- [ ] Export `UserSettings` interface
-- [ ] Export `PeriodType` type
-- [ ] Ensure `CurrencyCode` and `SUPPORTED_CURRENCIES` are exported
-- [ ] Verify all transaction types don't include currency
+- [x] Export `UserSettings` interface
+- [x] Export `PeriodType` type
+- [x] Ensure `CurrencyCode` and `SUPPORTED_CURRENCIES` are exported
+- [x] Verify all transaction types don't include currency
 
 ---
 
 ## Verification
 
-- [ ] Run `npx tsc --noEmit` - verify no type errors
-- [ ] Run `npm run lint` - verify no linting errors
-- [ ] Test TransactionForm in browser:
-  - [ ] Add new transaction
-  - [ ] Edit existing transaction
-  - [ ] Verify currency is not shown
-  - [ ] Verify amount uses correct currency symbol
-- [ ] Test Header in browser:
-  - [ ] Verify ThemeToggle is removed
-  - [ ] Verify Settings link works
-  - [ ] Verify Insights link works
-- [ ] Test Dashboard:
-  - [ ] Verify all charts display correctly
-  - [ ] Verify currency is consistent
+- [x] Run `npx tsc --noEmit` - verify no type errors
+- [x] Run `npm run lint` - verify no linting errors
+- [x] Test TransactionForm in browser:
+  - [x] Add new transaction
+  - [x] Edit existing transaction
+  - [x] Verify currency is not shown
+  - [x] Verify amount uses correct currency symbol
+- [x] Test Header in browser:
+  - [x] Verify ThemeToggle is removed
+  - [x] Verify Settings link works
+  - [x] Verify Insights link works
+- [x] Test Dashboard:
+  - [x] Verify all charts display correctly
+  - [x] Verify currency is consistent
 
 ---
 
 ## Success Criteria
 
-- ✅ TransactionForm has no currency selector
-- ✅ All amounts use settings currency
-- ✅ Header has no ThemeToggle
-- ✅ Settings and Insights links in navigation
-- ✅ Dashboard components work without currency parameters
-- ✅ Transaction components display amounts correctly
-- ✅ Savings components use settings currency
-- ✅ Storage doesn't serialize currency fields
-- ✅ TypeScript compiles without errors
-- ✅ ESLint passes
+- [x] TransactionForm has no currency selector
+- [x] All amounts use settings currency
+- [x] Header has no ThemeToggle
+- [x] Settings and Insights links in navigation
+- [x] Dashboard components work without currency parameters
+- [x] Transaction components display amounts correctly
+- [x] Savings components use settings currency
+- [x] Storage doesn't serialize currency fields
+- [x] TypeScript compiles without errors
+- [x] ESLint passes
+
+---
+
+## Status
+
+**Phase 4 Complete ✅**
+
+All UI components have been updated to align with single-currency architecture:
+
+- TransactionForm now uses settings currency with helper text
+- MonthlyTrendChart uses dynamic currency from settings
+- TransactionCard displays amounts with settings currency
+- All code passes TypeScript type checking
+- All lint warnings addressed (only unrelated warning in seed-data.ts remains)
 
 ---
 

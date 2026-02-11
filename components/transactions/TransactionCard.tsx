@@ -1,12 +1,13 @@
 'use client'
 
-import type { Transaction } from '@/lib/types'
+import type { Transaction, CurrencyCode } from '@/lib/types'
 import { kebabToPascal } from '@/lib/utils/icon-helpers'
 import { formatDate, formatCurrency } from '@/lib/utils/format-utils'
 import * as Icons from 'lucide-react'
 import { Pencil, Trash2, MoreVertical } from 'lucide-react'
 import { useState, useRef } from 'react'
 import { useEscapeKey } from '@/lib/accessibility'
+import storage from '@/lib/storage'
 
 interface IconProps {
   className?: string
@@ -32,6 +33,13 @@ export default function TransactionCard({
 }: TransactionCardProps) {
   const [showMenu, setShowMenu] = useState(false)
   const menuButtonRef = useRef<HTMLButtonElement>(null)
+  const [currency] = useState<CurrencyCode>(() => {
+    if (typeof window !== 'undefined') {
+      const settings = storage.getSettings()
+      return (settings.currency as CurrencyCode) || 'USD'
+    }
+    return 'USD'
+  })
 
   useEscapeKey(() => setShowMenu(false), showMenu)
 
@@ -43,7 +51,7 @@ export default function TransactionCard({
     IconComponent || (Icons.Circle as React.ComponentType<IconProps>)
 
   const formattedDate = formatDate(transaction.date)
-  const formattedAmount = formatCurrency(transaction.amount, 'USD')
+  const formattedAmount = formatCurrency(transaction.amount, currency)
 
   return (
     <div className="group relative rounded-lg border border-zinc-200 bg-white p-4 shadow-sm transition-all hover:shadow-md dark:border-zinc-700 dark:bg-zinc-900">
@@ -95,7 +103,6 @@ export default function TransactionCard({
               {isIncome ? '+' : '-'}
               {formattedAmount}
             </p>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400">USD</p>
           </div>
         </div>
 
